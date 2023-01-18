@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>510</width>
+    <height>401</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>10</y>
+     <width>141</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string>DATOS PROPIETARIO</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>60</y>
+     <width>71</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>Apellidos</string>
+   </property>
+  </widget>
+  <widget class="QPlainTextEdit" name="txt_apellidos">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>50</y>
+     <width>281</width>
+     <height>31</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_3">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>100</y>
+     <width>51</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>Nombre</string>
+   </property>
+  </widget>
+  <widget class="QPlainTextEdit" name="txt_nombre">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>90</y>
+     <width>281</width>
+     <height>31</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_4">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>140</y>
+     <width>121</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>N°  Documento</string>
+   </property>
+  </widget>
+  <widget class="QPlainTextEdit" name="txt_documento">
+   <property name="geometry">
+    <rect>
+     <x>170</x>
+     <y>130</y>
+     <width>251</width>
+     <height>31</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_5">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>180</y>
+     <width>131</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>Tipo Documento</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="comboBox_tipo_prop">
+   <property name="geometry">
+    <rect>
+     <x>170</x>
+     <y>180</y>
+     <width>81</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <item>
+    <property name="text">
+     <string/>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Cédula Identidad</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Registro Único Nacional</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QLabel" name="label_6">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>220</y>
+     <width>101</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>Titularidad</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="comboBox_titularidad_prop">
+   <property name="geometry">
+    <rect>
+     <x>170</x>
+     <y>220</y>
+     <width>191</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <item>
+    <property name="text">
+     <string/>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Propietario</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Poseedor</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Usufructuario</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Ocupante</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QLabel" name="label_8">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>260</y>
+     <width>221</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>Tipo de Documento de Propiedad</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="comboBox_doc_prop">
+   <property name="geometry">
+    <rect>
+     <x>240</x>
+     <y>260</y>
+     <width>191</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <item>
+    <property name="text">
+     <string/>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Folio Real, DD RR</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Testimonio de Propiedad</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Minuta de Transferencia</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Documento Privado</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Recibo (Transferencia)</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Recibo (Pago de Impuestos)</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Sin Documentación</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Recibo (Pago de Servicvios)</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Plano de Propiedad</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QLabel" name="label_9">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>300</y>
+     <width>161</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>Modo de Adquisición</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="comboBox_adquisicion_prop">
+   <property name="geometry">
+    <rect>
+     <x>240</x>
+     <y>300</y>
+     <width>191</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <item>
+    <property name="text">
+     <string/>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Compra</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Herencia</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Expropiación</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Usucapión</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Resolución Judicial</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QPushButton" name="btn_guardar_prop">
+   <property name="geometry">
+    <rect>
+     <x>340</x>
+     <y>360</y>
+     <width>111</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color:rgb(170, 255, 127)</string>
+   </property>
+   <property name="text">
+    <string>Guardar </string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btn_cancelar_prop">
+   <property name="geometry">
+    <rect>
+     <x>60</x>
+     <y>360</y>
+     <width>111</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color:rgb(255, 155, 155)</string>
+   </property>
+   <property name="text">
+    <string>Cancelar</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
