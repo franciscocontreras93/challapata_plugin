@@ -3808,13 +3808,7 @@ class ColegioRiberalta:
         
         urlTerrenos19 = "http://192.168.0.150:8080/apiCatastro/terrenos19"       
                 
-        response = requests.get(urlTerrenos19)
         
-        responseArray = []
-        
-        if response.status_code == 200:
-            response_json = response.json()
-            
         list_widget = self.dlg_informe2.list_bbdd
         
         for i in range(list_widget.count()):
@@ -3822,15 +3816,24 @@ class ColegioRiberalta:
         
         lista = []
                 
-        for item in response_json:
-            if item["titularBean"]:
-                lista.append(str(item["codigo"]) + "   " + str(item["titularBean"]["nombre"])  + "   " + str(item["titularBean"]["nombre"]))
-            else:
-                lista.append(str(item["codigo"]))
        
-        list_widget.addItems(lista)
         
-        self.lista_terreno_informe2 = response_json
+        
+        
+
+
+        try:
+            r = self.driver.read('select * from catastro.terrenosvista19')
+
+            for i in range(list_widget.count()):
+                list_widget.takeItem(0)
+
+            lista = [(str(item["codigo"]) + "   " + str(item["nombre"])  + "   " + str(item["apellidos"])) for item in r]
+            list_widget.addItems(lista)
+            self.lista_terreno_informe2 = r
+
+        except Exception as ex: 
+            print(ex)
 
         
     
