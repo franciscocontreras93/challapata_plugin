@@ -3825,12 +3825,12 @@ class ColegioRiberalta:
         
     
     def listar_layer_informe3_busca_ref(self):
-        #! ACTUALIZACION
+
         
+     
         list_widget = self.dlg_informe2.list_bbdd
         
-        for i in range(list_widget.count()):
-            list_widget.takeItem(0)
+        
             
         text_busqueda  = self.dlg_select_terreno_informe2_busca_ref.text_titular
         valor_busqueda = text_busqueda.toPlainText()
@@ -3842,6 +3842,21 @@ class ColegioRiberalta:
                 lista.append(str(item["codigo"]) + "   " + str(item["titularBean"]["nombre"]) + " " + str(item["titularBean"]["apellidos"]))
 
         list_widget.addItems(lista)
+
+        try:
+            sql = f''' SELECT * FROM catastro.terrenosvista19 where documento = {valor_busqueda} '''
+            r = self.driver.read(sql)
+            if len(r) > 0: 
+                for i in range(list_widget.count()):
+                    list_widget.takeItem(0)
+                lista = [str(item["codigo"]) + "   " + str(item["nombre"]) + " " + str(item["apellidos"]) for item in r]
+                list_widget.addItems(lista)
+            else: 
+                self.driver.showMessage('No Existen registros con la Referencia Catastral.',1,15)
+
+        
+        except Exception as ex: 
+            print(ex) 
         
         
     
@@ -3849,23 +3864,30 @@ class ColegioRiberalta:
     def listar_layer_informe3_busca_nombre(self):
             
         list_widget = self.dlg_informe2.list_bbdd
-            
-        for i in range(list_widget.count()):
-            list_widget.takeItem(0)
-            
+
         text_busqueda  = self.dlg_select_terreno_informe2_busca_nombre.text_titular
         valor_busqueda = text_busqueda.toPlainText()
             
-        lista = []
-              
-        for item in self.lista_terreno_informe2: 
-        
-            nombreyapellidos = str(item["titularBean"]["nombre"]) + " " + str(item["titularBean"]["apellidos"])
-        
-            if valor_busqueda in nombreyapellidos:
-                lista.append(str(item["codigo"]) + "   " + str(item["titularBean"]["nombre"]) + " " + str(item["titularBean"]["apellidos"]))
 
-        list_widget.addItems(lista)
+
+
+        try: 
+            q = ''
+            for e in valor_busqueda.split(): 
+                q  = q + '%' + e + '% '
+
+            sql = f''' select * from catastro.terrenosvista19 where nombre || ' ' || apellidos ilike '{q[:-1]}' '''
+            r = self.driver.read(sql)
+            if len(r) > 0:
+                for i in range(list_widget.count()):
+                    list_widget.takeItem(0)
+                lista = [str(item["codigo"]) + "   " + str(item["nombre"]) + " " + str(item["apellidos"]) for item in r]
+                list_widget.addItems(lista)
+            else: 
+                self.driver.showMessage('No existen registros con los valores buscados.',1,15)
+                    
+        except Exception as ex: 
+            print(ex)
         
          
         
