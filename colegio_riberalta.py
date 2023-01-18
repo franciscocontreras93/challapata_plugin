@@ -3805,29 +3805,16 @@ class ColegioRiberalta:
     lista_terreno_informe2 = ""
     
     def cargar_tablabbdd3(self):
-        
-        urlTerrenos19 = "http://192.168.0.150:8080/apiCatastro/terrenos19"       
-                
-        
-        list_widget = self.dlg_informe2.list_bbdd
-        
-        for i in range(list_widget.count()):
-            list_widget.takeItem(0)
-        
-        lista = []
-                
-       
-        
-        
-        
+           
 
+        list_widget = self.dlg_informe2.list_bbdd
+ 
 
         try:
             r = self.driver.read('select * from catastro.terrenosvista19')
 
             for i in range(list_widget.count()):
                 list_widget.takeItem(0)
-
             lista = [(str(item["codigo"]) + "   " + str(item["nombre"])  + "   " + str(item["apellidos"])) for item in r]
             list_widget.addItems(lista)
             self.lista_terreno_informe2 = r
@@ -3838,6 +3825,7 @@ class ColegioRiberalta:
         
     
     def listar_layer_informe3_busca_ref(self):
+        #! ACTUALIZACION
         
         list_widget = self.dlg_informe2.list_bbdd
         
@@ -3879,9 +3867,7 @@ class ColegioRiberalta:
 
         list_widget.addItems(lista)
         
-                
-        
-        
+         
         
     def mostrar_informe2(self, feature):
     
