@@ -1106,6 +1106,23 @@ class ColegioRiberalta:
         
     
     def abrir_dialogo_exportbbdd_feature(self):
+        #! CODIGO NUEVO YAPA 
+        lyr = iface.activeLayer() 
+        feat = lyr.selectedFeatures()[0]
+        # print(feat['codigo'])
+        try:
+            self.dlg_export_feature.txt_referencia.setPlainText(str(feat['codigo']))
+            self.dlg_export_feature.txt_calle.setPlainText(str(feat['direccion']))
+            self.dlg_export_feature.txt_manzano.setPlainText(str(feat['manzano']))
+            self.dlg_export_feature.txt_predio.setPlainText(str(feat['predio']))
+            self.dlg_export_feature.txt_sub.setPlainText(str(feat['subpredio']))
+            self.dlg_export_feature.txt_zona.setPlainText(str(feat['barrio']))
+            self.dlg_export_feature.txt_suptest.setPlainText('0')
+            self.dlg_export_feature.txt_frente.setPlainText(str(feat['frente']))
+            self.dlg_export_feature.txt_fondo.setPlainText(str(feat['fondo']))
+        except Exception as ex:
+            print(ex)
+            pass
         self.dlg_export_feature.show()
         
     def cerrar_dialogo_exportbbdd_feature(self):
@@ -2806,459 +2823,122 @@ class ColegioRiberalta:
         params = self.driver.params 
         uri = QgsDataSourceUri()
         uri.setConnection(params['host'],params['port'],params['dbname'],params['user'],params['password'])
-        uri.setDataSource('catastro','terrenosvista19','geom',exp,'id')
+        sql = f''' select * from catastro.terrenosvista19  where codigo = '{list_widget_name_ref}' '''
+        uri.setDataSource('',f'({sql})','geom','','id')
         layer_terreno = QgsVectorLayer(uri.uri(False),'layer_terreno','postgres')
         # QgsProject.instance().addMapLayer(layer_terreno)
-       
-
-            
-                
-
         
         layer_terreno.updateExtents()
 
-        symbol_terreno = QgsFillSymbol.createSimple({'color':'#ffffff', 
-                                              'color_border':'#0F0290',
-                                              'width_border':'1'})
 
-        layer_terreno.renderer().setSymbol(symbol_terreno)
-
-        layer_terreno.triggerRepaint()
-        
-        
-        
-        layer_settings_superficie  = QgsPalLayerSettings()
-        text_format_superficie = QgsTextFormat()
-
-        text_format_superficie.setFont(QFont("Arial", 8))
-        text_format_superficie.setSize(10)
-
-        buffer_settings_superficie = QgsTextBufferSettings()
-        buffer_settings_superficie.setEnabled(True)
-        buffer_settings_superficie.setSize(0.10)
-        # layer_settings_superficie.setColor(QColor("blue"))
-        
-        text_format_superficie.setBuffer(buffer_settings_superficie)
-        layer_settings_superficie.setFormat(text_format_superficie)
-
-        layer_settings_superficie.fieldName = "superficie"
-        # layer_settings_superficie.placement = 0
-        layer_settings_superficie.centroidInside = True
-
-        
-        layer_settings_superficie.enabled = True
-
-        layer_settings_superficie = QgsVectorLayerSimpleLabeling(layer_settings_superficie)
-        layer_terreno.setLabelsEnabled(True)
-        layer_terreno.setLabeling(layer_settings_superficie)
+        layer_terreno.loadNamedStyle(self.plugin_dir + r'\estilos\layer_terreno.qml')
         layer_terreno.triggerRepaint()
 
-         
-
-
-
-        # urlConstrucciones19 = "http://192.168.0.150:8080/apiCatastro/construcciones19"
         
-        # response_construcciones = requests.get(urlConstrucciones19)
-                
-        # if response_construcciones.status_code == 200:
-        #     response_json_construcciones = response_construcciones.json()
-                
-        # jsonConstruccionesArray = []
-        
-        # for itemConstruccion in response_json_construcciones:          
-                
-        #     if itemConstruccion["terrenos19"] and itemConstruccion["terrenos19"]["codigo"] == response_json_terreno["codigo"]:
-         
-        #         jsonConstruccionesArray.append(itemConstruccion);
         
         uri = QgsDataSourceUri()
         uri.setConnection(params['host'],params['port'],params['dbname'],params['user'],params['password'])
-        uri.setDataSource('catastro','construccionesvista19','geom',exp,'id')
+        sql = f''' select * from catastro.construccionesvista19  where codigo = '{list_widget_name_ref}' '''
+        uri.setDataSource('',f'({sql})','geom','','id')
         layer_construcciones = QgsVectorLayer(uri.uri(False),'layer_construcciones','postgres')
-        # QgsProject.instance().addMapLayer(layer_construcciones)
-        
-        
-        # layer_construcciones = QgsVectorLayer("MultiPolygon?crs=32719","construcciones","memory")
-        
-        # campo_id = QgsField("id",QVariant.Int)
-        # campo_cod = QgsField("cod",QVariant.Int)
-        # campo_aire = QgsField("aire",QVariant.String)
-        
-        # construccion_fields = [campo_id, campo_cod, campo_aire]
-           
-        # layer_construcciones.dataProvider().addAttributes(construccion_fields)
-        # layer_construcciones.updateFields()
-        
-        
-        # arrayCoordenadasConstruccionGeometria = []
-        # listFeaturesConstruccion = []
-        
-        # for jsonConstruccionArrayItem in jsonConstruccionesArray:
-        
-        #     feature_construccion = QgsFeature()
-        #     feature_construccion.setFields(layer_construcciones.fields())
-            
-            
-        #     feature_construccion.setAttribute("id", jsonConstruccionArrayItem["id"])
-        #     feature_construccion.setAttribute("cod", jsonConstruccionArrayItem["cod"])
-        #     feature_construccion.setAttribute("aire", jsonConstruccionArrayItem["aire"])
-            
-        #     arrayCoordenadasConstruccion = jsonConstruccionArrayItem["geom"]["coordinates"]
-            
-        #     for coordenadasConstruccion in arrayCoordenadasConstruccion:             
-        #         for coordCons in coordenadasConstruccion:                
-        #             for j in coordCons:
-        #                 arrayCoordenadasConstruccionGeometria.append(QgsPointXY(j[0],j[1]))
 
-        #     construccion_geometria = QgsGeometry.fromPolygonXY([arrayCoordenadasConstruccionGeometria])
-        #     feature_construccion.setGeometry(construccion_geometria)
-            
-        #     listFeaturesConstruccion.append(feature_construccion)
-        #     arrayCoordenadasConstruccionGeometria = []
-
-        
-        # layer_construcciones.dataProvider().addFeatures(listFeaturesConstruccion)
-       
-        symbol_cons = QgsFillSymbol.createSimple({'color':'#ffffff', 
-                                              'color_border':'#B22B1B',
-                                              'width_border':'0.5',
-                                              "outline_style": "dashed",})
-
-        layer_construcciones.renderer().setSymbol(symbol_cons)
+        layer_construcciones.loadNamedStyle(self.plugin_dir + r'\estilos\layer_construcciones.qml')
 
  
-        layer_construcciones.triggerRepaint()         
-  
-
-        
-        
-        layer_settings_cod_cons  = QgsPalLayerSettings()
-        text_format_cod_cons = QgsTextFormat()
-
-        text_format_cod_cons.setFont(QFont("Arial", 8))
-        text_format_cod_cons.setSize(10)
-
-        buffer_settings_cod_cons = QgsTextBufferSettings()
-        buffer_settings_cod_cons.setEnabled(True)
-        buffer_settings_cod_cons.setSize(0.10)
-        # layer_settings_superficie.setColor(QColor("blue"))
-        
-        text_format_cod_cons.setBuffer(buffer_settings_superficie)
-        layer_settings_cod_cons.setFormat(text_format_superficie)
-
-        layer_settings_cod_cons.fieldName = "cod"
-        # layer_settings_cod_cons.placement = 0
-        layer_settings_cod_cons.centroidInside = True
-
-        
-        layer_settings_cod_cons.enabled = True
-
-        layer_settings_cod_cons = QgsVectorLayerSimpleLabeling(layer_settings_cod_cons)
-        layer_construcciones.setLabelsEnabled(True)
-        layer_construcciones.setLabeling(layer_settings_cod_cons)
         layer_construcciones.triggerRepaint()
         
         
         uri = QgsDataSourceUri()
         uri.setConnection(params['host'],params['port'],params['dbname'],params['user'],params['password'])
-        uri.setDataSource('catastro','terrenosvista19','geom','','id')
+        sql = f''' select n.* from catastro.terrenosvista19 n, catastro.terrenosvista19 p
+        where st_touches(n.geom,p.geom) 
+        and p.codigo = '{list_widget_name_ref}'
+        and n.codigo != '{list_widget_name_ref}' '''
+        uri.setDataSource('',f'({sql})','geom','','id')
         layer_todos_terrenos19 = QgsVectorLayer(uri.uri(False),'layer_todos_terrenos19','postgres')
-        # QgsProject.instance().addMapLayer(layer_todos_terrenos19)
 
-        # urlTodosTerrenos19 = "http://192.168.0.150:8080/apiCatastro/terrenos19/"
-        # response_todos_terrenos19 = requests.get(urlTodosTerrenos19)
-        
-        # if response_todos_terrenos19.status_code == 200:
-        #     response_json_todos_terrenos19 = response_todos_terrenos19.json()
-            
-        # layer_todos_terrenos19 = QgsVectorLayer("Polygon?crs=EPSG:32719","terreno","memory")
-        # layer_todos_terrenos19_provider = layer_todos_terrenos19.dataProvider()
-        
-        # campo_codigo = QgsField("codigo",QVariant.String)
-        # campo_nombre = QgsField("nombre",QVariant.String)
-
-        # todos_terrenos19_fields = [campo_codigo, campo_nombre]
-        
-        # layer_todos_terrenos19_provider.addAttributes(todos_terrenos19_fields)
-        # layer_todos_terrenos19.updateFields()
-        
-        # arrayCoordenadasTodosTerrenoGeometria = []
-        # listFeaturesTodosTerrenos = []
-        
-        # for response_json_todos_terrenos19_item in response_json_todos_terrenos19:
-        
-        #     if response_json_todos_terrenos19_item["codigo"] != response_json_terreno["codigo"]:
-            
-        #         feature_todos_terrenos19 = QgsFeature()
-        #         feature_todos_terrenos19.setFields(layer_todos_terrenos19.fields())
-                
-                
-        #         feature_todos_terrenos19.setAttribute("codigo", response_json_todos_terrenos19_item["codigo"])
-                
-        #         if response_json_todos_terrenos19_item["titularBean"]:
-        #             feature_todos_terrenos19.setAttribute("nombre", response_json_todos_terrenos19_item["titularBean"]["nombre"] + " " +response_json_todos_terrenos19_item["titularBean"]["apellidos"])
-       
-                
-        #         arrayCoordenadasTodosTerrenos = response_json_todos_terrenos19_item["geom"]["coordinates"]
-                
-        #         for coordenadasTodosTerrenos in arrayCoordenadasTodosTerrenos:             
-        #             for coordTodTerrenos in coordenadasTodosTerrenos:                
-        #                 for k in coordTodTerrenos:
-        #                     arrayCoordenadasTodosTerrenoGeometria.append(QgsPointXY(k[0],k[1]))
-
-        #         todos_terrenos_geometria = QgsGeometry.fromPolygonXY([arrayCoordenadasTodosTerrenoGeometria])
-        #         feature_todos_terrenos19.setGeometry(todos_terrenos_geometria)
-                
-        #         listFeaturesTodosTerrenos.append(feature_todos_terrenos19)
-        #         arrayCoordenadasTodosTerrenoGeometria = []
-
-        
-        # layer_todos_terrenos19.dataProvider().addFeatures(listFeaturesTodosTerrenos)
-        
-
-
-        symbol_todos_terrenos = QgsFillSymbol.createSimple({'color':'#ffffff', 
-                                              'color_border':'#0F0290',
-                                              'width_border':'0.2',
-                                              'outline_style': 'dash',
-                                              })
-
-        layer_todos_terrenos19.renderer().setSymbol(symbol_todos_terrenos)
-        layer_todos_terrenos19.triggerRepaint()         
-  
-
-        
-        layer_settings_todos_terrenos19  = QgsPalLayerSettings()
-        text_format_todos_terrenos19 = QgsTextFormat()
-
-        text_format_todos_terrenos19.setFont(QFont("Arial", 8))
-        text_format_todos_terrenos19.setSize(10)
-
-        buffer_settings_todos_terrenos19 = QgsTextBufferSettings()
-        buffer_settings_todos_terrenos19.setEnabled(True)
-        buffer_settings_todos_terrenos19.setSize(0.10)
-  
-        
-        text_format_todos_terrenos19.setBuffer(buffer_settings_superficie)
-        layer_settings_todos_terrenos19.setFormat(text_format_superficie)
-
-        layer_settings_todos_terrenos19.fieldName = "nombre||' '||apellidos"
-        layer_settings_todos_terrenos19.isExpression = True
-        layer_settings_todos_terrenos19.placementFlags  = QgsPalLayerSettings.AboveLine
-        # layer_settings_todos_terrenos19.placement = 0
-        layer_settings_todos_terrenos19.centroidInside = True
-
-        layer_settings_todos_terrenos19.enabled = True
-
-        layer_settings_todos_terrenos19 = QgsVectorLayerSimpleLabeling(layer_settings_todos_terrenos19)
-        layer_todos_terrenos19.setLabelsEnabled(True)
-        layer_todos_terrenos19.setLabeling(layer_settings_todos_terrenos19)
+        layer_todos_terrenos19.loadNamedStyle(self.plugin_dir + r'\estilos\todos_terrenos.qml')
         layer_todos_terrenos19.triggerRepaint()
-        
-            
 
-
-        # urlWithParams = 'type=xyz&url=http://ecn.t3.tiles.virtualearth.net/tiles/a{q}.jpeg?g=1&zmax=19&zmin=0&crs=EPSG32719' #! CAMBIAR POR ORTOFOTO
 
         path = r'D:\GeoSIG\Otros\ALEX-CATASTRO\ortofoto_global.ecw'
-        rlayer = QgsRasterLayer(path, 'Ortofoto')  #! CAMBIAR POR ORTOFOTO 
+        rlayer = QgsRasterLayer(path, 'Ortofoto') 
 
         # QgsProject.instance().addMapLayer(rlayer)
         #* working well
 
-        
-        
-        
-        
-        
         feature_terreno = [e for e in layer_terreno.getFeatures()][0]
-        
 
-       
-        vertexLayer = QgsVectorLayer("POINT?crs=EPSG:32719", feature_terreno["codigo"] + '_Vertices', "memory")
-    
-        vertex_nombre = QgsField("nombre",QVariant.String)
-        vertexLayer.dataProvider().addAttributes([vertex_nombre])
-        vertexLayer.updateFields()
-        
-        
-        geom = feature_terreno.geometry()
-        ver = geom.vertexAt(0)
-                
-        points=[]
-        pointsxy = []
+
+        uri = QgsDataSourceUri()
+        uri.setConnection(params['host'],params['port'],params['dbname'],params['user'],params['password'])
+        sql = f''' select (st_dumppoints(geom)).path[3] as id,
+        'V'||(st_dumppoints(geom)).path[3] as nombre,
+        st_x((st_dumppoints(geom)).geom) este,
+        st_y((st_dumppoints(geom)).geom) norte, 
+        (st_dumppoints(geom)).geom 
+        from catastro.terrenos19 where codigo = '{list_widget_name_ref}' '''
+        uri.setDataSource('',f'({sql})','geom','','id')
+        vertexLayer = QgsVectorLayer(uri.uri(False), feature_terreno["codigo"] + '_Vertices', "postgres")
+
         coordenadas = []
-        n = 0
-        
-        featureVertices = QgsFeature()
-        featureVertices.setFields(vertexLayer.fields())
- 
-  
-        while(ver.isEmpty() != True):
-            n +=1
-            points.append(ver)
-            ver=geom.vertexAt(n)
-            ver_xy = QgsPointXY(ver)
-            pointsxy.append(ver_xy)
-            x = ver_xy.x()
-            y = ver_xy.y()
-            coordenadas.append(x)
-            coordenadas.append(y)
-            geomVertex = QgsGeometry.fromPointXY(ver_xy)
-            featureVertices.setGeometry(geomVertex)
-            featureVertices.setAttribute("Nombre", "V"+str(n))
-            vertexLayer.dataProvider().addFeatures([featureVertices])
+        for f in vertexLayer.getFeatures(): 
+            geom = f.geometry().asPoint()
+            coordenadas.append(geom.x())
+            coordenadas.append(geom.y())
+
+        dataTable = []
+        for f in vertexLayer.getFeatures(): 
+            geom = f.geometry().asPoint()
+            l = []
+            l.append(f['nombre'])
+            l.append(str(round(geom.x(),2)))
+            l.append(str(round(geom.y(),2)))
+            dataTable.append(l)
+        # print(data)
         
 
+            
 
-        # Añado etiqueta a la layer de vertices
-        layer_settings  = QgsPalLayerSettings()
-        text_format = QgsTextFormat()
 
-        text_format.setFont(QFont("Arial", 8))
-        text_format.setSize(8)
 
-        buffer_settings = QgsTextBufferSettings()
-        buffer_settings.setEnabled(True)
-        buffer_settings.setSize(0.10)
-        buffer_settings.setColor(QColor("black"))
 
-        text_format.setBuffer(buffer_settings)
-        layer_settings.setFormat(text_format)
-
-        layer_settings.fieldName = "Nombre"
-        #layer_settings.placement = 3
-        
-        layer_settings.centroidWhole = False
-        layer_settings.centroidInside = True
-     
-        layer_settings.enabled = True
-
-        layer_settings = QgsVectorLayerSimpleLabeling(layer_settings)
-        vertexLayer.setLabelsEnabled(True)
-        vertexLayer.setLabeling(layer_settings)
+        vertexLayer.loadNamedStyle(self.plugin_dir + r'\estilos\layer_vertex.qml')
         vertexLayer.triggerRepaint()
-        # QgsProject.instance().addMapLayer(vertexLayer)
 
 
-        
-        
-        layerLineas = QgsVectorLayer("Linestring?crs=EPSG:32719", feature_terreno["codigo"] + '_Lineas', "memory") 
-        
-        layerLineas_nombre = QgsField("nombre",QVariant.String)
-        layerLineas_distancia = QgsField("distancia",QVariant.String)
-        layerLineas_orientacion = QgsField("orientacion",QVariant.String)
-        layerLineas_vecino = QgsField("vecino",QVariant.String)
-        layerLineas.dataProvider().addAttributes([layerLineas_nombre, layerLineas_distancia, layerLineas_orientacion, layerLineas_vecino])
-        layerLineas.updateFields()
-        
-        puntos = []
-        pointsxy.pop()
+        uri = QgsDataSourceUri()
+        uri.setConnection(params['host'],params['port'],params['dbname'],params['user'],params['password'])
+        sql = f''' select row_number () over () as id, round(cast(st_length(ST_MakeLine(sp,ep))as numeric) ,2) as distancia ,ST_MakeLine(sp,ep) as geom
+        FROM
+        -- extract the endpoints for every 2-point line segment for each linestring
+        (SELECT
+            ST_PointN(geom, generate_series(1, ST_NPoints(geom)-1)) as sp,
+            ST_PointN(geom, generate_series(2, ST_NPoints(geom)  )) as ep
+            FROM
+            -- extract the individual linestrings
+            (SELECT (ST_Dump(ST_Boundary(geom))).geom
+            FROM catastro.terrenos19 where codigo = '{list_widget_name_ref}'
+            ) AS linestrings
+            ) AS segments  '''
+        uri.setDataSource('',f'({sql})','geom','','id')
+        layerLineas = QgsVectorLayer(uri.uri(False), feature_terreno["codigo"] + '_Lineas', "postgres")
 
-        for i in range(len(pointsxy) -1):
-            featurelines = QgsFeature()
-            
-            p1 = pointsxy[i]
-            p2 = pointsxy[i + 1]
-            
-            puntos = [p1, p2]
-
-            geomLine = QgsGeometry.fromPolylineXY(puntos)
-            featurelines.setGeometry(geomLine)
-            distancia = round(geomLine.length(),2)
-            print(distancia)
-                        
-            camposlineas = layerLineas.dataProvider().fields()
-            featurelines.setFields(camposlineas)
-            
-            featurelines.setAttribute('nombre', str(i+1))
-            featurelines.setAttribute('distancia', distancia)
-            
-            layerLineas.dataProvider().addFeatures([featurelines])
-        
-        
-        p_inicio = pointsxy[0]
-        p_final = pointsxy[-1]
-        
-        p_inicio_lista = [p_final, p_inicio]
-        
-        p_inicio_feature = QgsFeature()
-        p_inicio_geometria = QgsGeometry.fromPolylineXY(p_inicio_lista)
-        p_inicio_feature.setGeometry(p_inicio_geometria)
-        
-        p_inicio_distancia = round(p_inicio_geometria.length(),2)
-        p_inicio_campos = layerLineas.dataProvider().fields()
-        p_inicio_feature.setFields(p_inicio_campos)
-        
-        p_inicio_feature.setAttribute('nombre', str(len(pointsxy) + 1 ))
-        p_inicio_feature.setAttribute('distancia', p_inicio_distancia)
-        
-        layerLineas.dataProvider().addFeatures([p_inicio_feature])
-
-        
-        featsCopiaLine = [feat for feat in layerLineas.getFeatures()]
-        
-        
-        
-        layerLineasUbicacion = QgsVectorLayer("Linestring?crs=EPSG:32719", feature_terreno["codigo"] + '_LineasUbicacion', "memory")
-     
-        mem_layer_data = layerLineasUbicacion.dataProvider()
-        attr = layerLineas.dataProvider().fields().toList()
-        mem_layer_data.addAttributes(attr)
-        layerLineasUbicacion.updateFields()
-        mem_layer_data.addFeatures(featsCopiaLine)
-        
-        n = 1
-        distanciaArray = []
-        
-        for i in points:
-            if n < len(points):
-                distance = i.distance(points[n])
-                n = n+1
-                distanciaArray.append(distance)
-            else:
-                n = 0
-                distance = i.distance(points[n])
-                distanciaArray.append(distance)
-               
-        symbol_l =QgsLineSymbol.createSimple ({'color':'yellow', 'width':'0.8', 'line_style':'solid'})    
-        layerLineasUbicacion.renderer().setSymbol(symbol_l)
-        layerLineasUbicacion.triggerRepaint()
-        # QgsProject.instance().addMapLayer(layerLineasUbicacion)
-        
-        
- 
- 
- 
-        
-        # añadir etiqueta de distancias al mapa
-        
-        layer_settings_distance  = QgsPalLayerSettings()
-        text_format_distance = QgsTextFormat()
-
-        text_format_distance.setFont(QFont("Arial", 6))
-        text_format_distance.setSize(8)
-
-        buffer_settings_line = QgsTextBufferSettings()
-        buffer_settings_line.setEnabled(True)
-        buffer_settings_line.setSize(0.10)
-        buffer_settings_line.setColor(QColor("blue"))
-        
-        text_format_distance.setBuffer(buffer_settings_line)
-        layer_settings_distance.setFormat(text_format_distance)
-
-        layer_settings_distance.fieldName = "Distancia"
-        layer_settings_distance.placement = 3
-        layer_settings_distance.placementFlags = QgsPalLayerSettings.AboveLine
-
-        
-        layer_settings_distance.enabled = True
-
-        layer_settings_distance = QgsVectorLayerSimpleLabeling(layer_settings_distance)
-        layerLineas.setLabelsEnabled(True)
-        layerLineas.setLabeling(layer_settings_distance)
+        layerLineas.loadNamedStyle(self.plugin_dir + r'\estilos\lineas_medidas.qml')
         layerLineas.triggerRepaint()
+
+        
+        uri = QgsDataSourceUri()
+        uri.setConnection(params['host'],params['port'],params['dbname'],params['user'],params['password'])
+        sql = f''' select * from catastro.terrenosvista19  where codigo = '{list_widget_name_ref}' '''
+        uri.setDataSource('',f'({sql})','geom','','id')
+        layerLineasUbicacion = QgsVectorLayer(uri.uri(False), feature_terreno["codigo"] + '_LineasUbicacion','postgres')   
+        layerLineasUbicacion.loadNamedStyle(self.plugin_dir + r'\estilos\layer_ubicacion.qml')
+        layerLineasUbicacion.triggerRepaint()
+        # print(layerLineasUbicacion.isValid())
+        # # QgsProject.instance().addMapLayer(layerLineasUbicacion)
+
+        
         
    
         
@@ -3288,7 +2968,7 @@ class ColegioRiberalta:
         
         
 
-        tmpfile = self.plugin_dir + "/riberaltalayout2.qpt"
+        tmpfile = self.plugin_dir + "/riberaltalayout2_2.qpt"
    
 
         with open(tmpfile) as f:
@@ -3301,75 +2981,88 @@ class ColegioRiberalta:
 
         items, ok = layout.loadFromTemplate(doc, QgsReadWriteContext(), False)
         
- 
+        layout.itemById('id_names').setText(str(feature_terreno["nombre"]) + " " + str(feature_terreno["apellidos"]))
+        layout.itemById('id_manzano').setText(str(feature_terreno["manzano"]))
+        layout.itemById('id_predio').setText(str(feature_terreno["predio"]))
+        layout.itemById('id_subpredio').setText(str(feature_terreno["subpredio"]))
+        layout.itemById('id_direccion').setText(str(feature_terreno["direccion"]))
+        layout.itemById('id_zona').setText(str(feature_terreno["barrio"]))
+        layout.itemById('id_documento').setText(str(feature_terreno["documento"]))
+        layout.itemById('id_codigo').setText(str(feature_terreno["codigo"]))
+        layout.itemById('id_base').setText(str(feature_terreno["base"]))
+
         
-        items[0].setText(str(feature_terreno["nombre"]) + " " + str(feature_terreno["apellidos"]))
-        items[1].setText(str(feature_terreno["documento"]))
+        suptest2 = float(feature_terreno["suptest"])
+        layout.itemById('id_suptest').setText(str(round(suptest2,2)))
         
-        suptest2 = 0
         
-        # if feature_terreno["suptest"] == "":
-            # suptest2 = 0
-        # else:
         
-            # suptest = float(feature_terreno["suptest"])
-            # suptest2 = round(suptest, 2)
-        
-        resta = suptest2 - float(feature_terreno["superficie"])
-        resta2 = round(resta,2)
         
         sup = 0
         if feature_terreno["superficie"]:
             sup = feature_terreno["superficie"]
         sup2 = round(sup, 2)
+        layout.itemById('id_superficie').setText(str(sup2))
+
+        resta = suptest2 - float(feature_terreno["superficie"])
+        resta2 = round(resta,2)
+        layout.itemById('id_diferencia').setText(str(resta2))
+
+
         
-        items[2].setText(str(resta2))
-        items[3].setText(str(sup2))
-        items[4].setText(str(suptest2))
-        
+
    
         items[5].setText("La Pampa")
         items[6].setText("Municipio de Reyes")
-        items[7].setText(str(feature_terreno["barrio"]))
-        items[8].setText(str(feature_terreno["direccion"]))
-        items[9].setText(str(feature_terreno["subpredio"]))
-        items[10].setText(str(feature_terreno["predio"]))
-        items[11].setText(str(feature_terreno["manzano"]))
- 
+
        
         
         sup_total = sup + resta
-        items[17].setText(str(sup_total))
-        
-        items[23].setText(str(round(coordenadas[0],3)))
-        items[24].setText(str(round(coordenadas[1],3)))
-        
-        items[25].setText(str(round(coordenadas[2],3)))
-        items[26].setText(str(round(coordenadas[3],3)))
-        
-        items[27].setText(str(round(coordenadas[4],3)))
-        items[28].setText(str(round(coordenadas[5],3)))
-        
-        items[29].setText(str(round(coordenadas[6],3)))
-        items[30].setText(str(round(coordenadas[7],3)))
-        
-        items[31].setText(str(round(coordenadas[8],3)))
-        items[32].setText(str(round(coordenadas[9],3)))
-        
-        items[33].setText(str(feature_terreno["codigo"]))
-        items[34].setText(str(feature_terreno["base"]))
+        # items[17].setText(str(sup_total))
+
+        layout.itemById('id_suptotal').setText(str(sup_total))
+
         
         now = datetime.now()
         
-        items[35].setText("{}/{}/{}".format(now.day, now.month, now.year))
+        layout.itemById('id_date').setText("{}/{}/{}".format(now.day, now.month, now.year))
 
-  
-        items[36].setText("19")
-            
-        
+        # print(layout.itemById('id_vertex'))
+        table = QgsLayoutItemTextTable(layout)
+        layout.addMultiFrame(table)
 
-      
-        
+        # Add columns       
+        cols = [QgsLayoutTableColumn(),QgsLayoutTableColumn(),QgsLayoutTableColumn()]
+        cols[0].setHeading("heading 0")
+        cols[1].setHeading("heading 1")
+        cols[2].setHeading("heading 2")
+        table.setColumns(cols)
+
+        # Add only 1 row
+        for e in dataTable:
+            table.addRow(e)
+
+        table.setGridStrokeWidth(0.3) # 0.1 mm
+        content_text_format = QgsTextFormat()
+        content_text_format.setSize(6)
+        table.setContentTextFormat(content_text_format)
+        header_text_format = QgsTextFormat()
+        header_text_format.setSize(6)
+        table.setHeaderTextFormat(header_text_format)
+
+        # Base class for frame items, which form a layout multiframe item.
+        frame = QgsLayoutFrame(layout, table)
+        frame.setMinimumSize(QgsLayoutSize(40, 50))
+        frame.attemptResize(QgsLayoutSize(40, 50), False)
+        frame.attemptMove(QgsLayoutPoint(253, 18, QgsUnitTypes.LayoutMillimeters))
+        table.addFrame(frame)
+        data = [1,2,3]
+        fields = ['Nombre','Este','Norte']
+        cols = [QgsLayoutTableColumn(), QgsLayoutTableColumn(), QgsLayoutTableColumn()]
+        for n in range(0, len(fields)):
+            cols[n].setHeading(fields[n])
+        table.setColumns(cols)
+ 
         project = QgsProject.instance()
  
         mapas = []
@@ -3383,10 +3076,7 @@ class ColegioRiberalta:
         
         nombre = ""
         
-        for id, layer in project.mapLayers().items():
-            if layer.name() == "Satelite":
-                nombre = "Satelite"
-        
+               
         if nombre == "":
             QgsProject.instance().addMapLayer(rlayer)
         
@@ -3415,9 +3105,10 @@ class ColegioRiberalta:
         mapa1.setLayers([vertexLayer,layer_construcciones,layer_terreno,layer_todos_terrenos19, layerLineas])
         
         rect1 = QgsRectangle(ms1.fullExtent())
-        rect1.scale(2.2)
+        rect1.scale(3.5)
         ms1.setExtent(rect1)
         mapa1.setExtent(rect1)
+        # mapa1.setScale(2000)
         mapa1.setBackgroundColor(QColor(255, 0, 0, 0))
                 
         mapa1.attemptResize(QgsLayoutSize(207, 144, QgsUnitTypes.LayoutMillimeters))
@@ -3427,7 +3118,7 @@ class ColegioRiberalta:
         mapa2.setRect(20, 20, 20, 20) 
         ms2 = QgsMapSettings()
         ms2.setLayers([layer_terreno])
-        mapa2.setLayers([layerLineasUbicacion, rlayer])
+        mapa2.setLayers([layerLineasUbicacion,rlayer])
         
         rect2 = QgsRectangle(ms2.fullExtent())
         rect2.scale(2.8)
@@ -3441,6 +3132,9 @@ class ColegioRiberalta:
         iface.openLayoutDesigner(layout)
         exporter = QgsLayoutExporter(layout)    
         exporter.exportToPdf(self.plugin_dir + "/Layout.pdf", QgsLayoutExporter.PdfExportSettings()) 
+
+        
+        
         
         
         # QgsProject.instance().removeMapLayer(layerLineasUbicacion)        
@@ -3449,12 +3143,12 @@ class ColegioRiberalta:
         # QgsProject.instance().removeMapLayer(layerLineas)
         # QgsProject.instance().removeMapLayer(layer_todos_terrenos19)
 
-        iface.mapCanvas().setExtent(layer_terreno.extent()).refresh()
+        iface.mapCanvas().setExtent(layer_terreno.extent())
      
                         
         
-       ############################################################################################################################################
-    ############################################################QUINTO BOTON PRIMER CERTIFICADO##########################################################
+    ############################################################################################################################################
+    ############################################################QUINTO BOTON PRIMER CERTIFICADO#################################################
     ############################################################################################################################################ 
     
     
@@ -3478,7 +3172,8 @@ class ColegioRiberalta:
             list_widget.takeItem(0)
         
         lista = []
-        r = self.driver.read('select * from catastro.terrenosvista19')        
+        r = self.driver.read('select * from catastro.terrenosvista19')
+        # print(r)        
         for item in r:
             if item["nombre"]:
                 lista.append(str(item["codigo"]) + "   " + str(item["nombre"])  + "   " + str(item["nombre"]))
@@ -3571,122 +3266,132 @@ class ColegioRiberalta:
         
         
         list_widget_name_ref = list_widget_name[0:ran]
+
+        params = self.driver.params 
         
         
         
         
-        urlTerreno19 = "http://192.168.0.150:8080/apiCatastro/terrenos19/" + list_widget_name_ref
+        # urlTerreno19 = "http://192.168.0.150:8080/apiCatastro/terrenos19/" + list_widget_name_ref
         
-        response_terreno = requests.get(urlTerreno19)
+        # response_terreno = requests.get(urlTerreno19)
         
         
-        if response_terreno.status_code == 200:
-            response_json_terreno = response_terreno.json()
+        # if response_terreno.status_code == 200:
+        #     response_json_terreno = response_terreno.json()
+
+        uri = QgsDataSourceUri()
+        uri.setConnection(params['host'],params['port'],params['dbname'],params['user'],params['password'])
+        sql = f''' select * from catastro.terrenosvista19  where codigo = '{list_widget_name_ref}' '''
+        uri.setDataSource('',f'({sql})','geom','','id')
+        layer_terreno = QgsVectorLayer(uri.uri(False),'layer_construcciones','postgres')
             
                 
         
-        layer_terreno = QgsVectorLayer("Polygon?crs=EPSG:32719","terreno","memory")
-        layer_terreno_provider = layer_terreno.dataProvider()
+        # layer_terreno = QgsVectorLayer("Polygon?crs=EPSG:32719","terreno","memory")
+        # layer_terreno_provider = layer_terreno.dataProvider()
         
         
-        campo_codigo = QgsField("codigo",QVariant.String)
-        campo_direccion = QgsField("direccion",QVariant.String)
-        campo_superficie = QgsField("superficie",QVariant.Double)
+        # campo_codigo = QgsField("codigo",QVariant.String)
+        # campo_direccion = QgsField("direccion",QVariant.String)
+        # campo_superficie = QgsField("superficie",QVariant.Double)
         
-        campo_barrio = QgsField("barrio",QVariant.String)
+        # campo_barrio = QgsField("barrio",QVariant.String)
         
         
-        campo_agua = QgsField("agua", QVariant.Bool)
-        campo_energia = QgsField("energia", QVariant.Bool)
-        campo_alcantarillado = QgsField("alcantarillado", QVariant.Bool)
-        campo_telefono = QgsField("telefono", QVariant.Bool)
-        campo_internet = QgsField("internet", QVariant.Bool)
-        campo_transporte = QgsField("transporte", QVariant.Bool)
+        # campo_agua = QgsField("agua", QVariant.Bool)
+        # campo_energia = QgsField("energia", QVariant.Bool)
+        # campo_alcantarillado = QgsField("alcantarillado", QVariant.Bool)
+        # campo_telefono = QgsField("telefono", QVariant.Bool)
+        # campo_internet = QgsField("internet", QVariant.Bool)
+        # campo_transporte = QgsField("transporte", QVariant.Bool)
         
-        campo_frente = QgsField("frente",QVariant.String)
-        campo_fondo = QgsField("fondo",QVariant.String)
-        campo_suptest = QgsField("suptest",QVariant.String)
+        # campo_frente = QgsField("frente",QVariant.String)
+        # campo_fondo = QgsField("fondo",QVariant.String)
+        # campo_suptest = QgsField("suptest",QVariant.String)
 
-        campo_manzano = QgsField("manzano",QVariant.String)
-        campo_predio = QgsField("predio",QVariant.String)
-        campo_sub = QgsField("subpredio",QVariant.String)
-        campo_base = QgsField("base",QVariant.String)
+        # campo_manzano = QgsField("manzano",QVariant.String)
+        # campo_predio = QgsField("predio",QVariant.String)
+        # campo_sub = QgsField("subpredio",QVariant.String)
+        # campo_base = QgsField("base",QVariant.String)
         
-        campo_nombre = QgsField("nombre",QVariant.String)
-        campo_apellidos = QgsField("apellidos",QVariant.String)
-        campo_documento = QgsField("documento",QVariant.String)
+        # campo_nombre = QgsField("nombre",QVariant.String)
+        # campo_apellidos = QgsField("apellidos",QVariant.String)
+        # campo_documento = QgsField("documento",QVariant.String)
         
-        campo_tipo_doc = QgsField("tipo_doc",QVariant.String)
-        campo_caracter = QgsField("caracter",QVariant.String)
-        campo_documento_prop = QgsField("documento_prop",QVariant.String)
-        campo_adquisicion = QgsField("adquisicion",QVariant.String)
+        # campo_tipo_doc = QgsField("tipo_doc",QVariant.String)
+        # campo_caracter = QgsField("caracter",QVariant.String)
+        # campo_documento_prop = QgsField("documento_prop",QVariant.String)
+        # campo_adquisicion = QgsField("adquisicion",QVariant.String)
         
-        campo_tipovia = QgsField("tipovia",QVariant.String)
-        campo_valorvia = QgsField("valorvia",QVariant.Double)
+        # campo_tipovia = QgsField("tipovia",QVariant.String)
+        # campo_valorvia = QgsField("valorvia",QVariant.Double)
         
-        campo_nombretopo = QgsField("nombretopo",QVariant.String)
-        campo_descrtopo = QgsField("descrtopo",QVariant.String) 
-        campo_valortopo = QgsField("valortopo",QVariant.Double)        
-        
-        
-        
-        terreno_fields = [campo_codigo,campo_direccion,campo_superficie,campo_barrio,campo_energia,campo_agua,campo_alcantarillado,campo_telefono,campo_internet,
-        campo_transporte,campo_frente,campo_fondo,campo_suptest,campo_manzano,campo_predio,campo_sub,campo_base,
-        campo_nombre,campo_apellidos, campo_documento,campo_tipo_doc,campo_caracter,campo_documento_prop,campo_adquisicion,campo_tipovia,campo_valorvia,campo_nombretopo,
-        campo_descrtopo,campo_valortopo]
+        # campo_nombretopo = QgsField("nombretopo",QVariant.String)
+        # campo_descrtopo = QgsField("descrtopo",QVariant.String) 
+        # campo_valortopo = QgsField("valortopo",QVariant.Double)        
         
         
-        layer_terreno_provider.addAttributes(terreno_fields)
-        layer_terreno.updateFields()
+        
+        # terreno_fields = [campo_codigo,campo_direccion,campo_superficie,campo_barrio,campo_energia,campo_agua,campo_alcantarillado,campo_telefono,campo_internet,
+        # campo_transporte,campo_frente,campo_fondo,campo_suptest,campo_manzano,campo_predio,campo_sub,campo_base,
+        # campo_nombre,campo_apellidos, campo_documento,campo_tipo_doc,campo_caracter,campo_documento_prop,campo_adquisicion,campo_tipovia,campo_valorvia,campo_nombretopo,
+        # campo_descrtopo,campo_valortopo]
+        
+        
+        # layer_terreno_provider.addAttributes(terreno_fields)
+        # layer_terreno.updateFields()
         
 
         
-        feature_terreno = QgsFeature()
+        # feature_terreno = QgsFeature()
         
-        feature_terreno.setFields(layer_terreno.fields())
+        # feature_terreno.setFields(layer_terreno.fields())
         
               
-        feature_terreno.setAttribute("codigo", response_json_terreno["codigo"])
+        # feature_terreno.setAttribute("codigo", response_json_terreno["codigo"])
         
-        feature_terreno.setAttribute("direccion", response_json_terreno["direccion"])
-        feature_terreno.setAttribute("superficie", response_json_terreno["superficie"])
-        feature_terreno.setAttribute("barrio", response_json_terreno["barrio"])
+        # feature_terreno.setAttribute("direccion", response_json_terreno["direccion"])
+        # feature_terreno.setAttribute("superficie", response_json_terreno["superficie"])
+        # feature_terreno.setAttribute("barrio", response_json_terreno["barrio"])
         
-        feature_terreno.setAttribute("energia", response_json_terreno["energia"])
-        feature_terreno.setAttribute("agua", response_json_terreno["agua"])
-        feature_terreno.setAttribute("alcantarillado", response_json_terreno["alcantarillado"])
-        feature_terreno.setAttribute("telefono", response_json_terreno["telefono"])
-        feature_terreno.setAttribute("internet", response_json_terreno["internet"])
-        feature_terreno.setAttribute("transporte", response_json_terreno["transporte"])
+        # feature_terreno.setAttribute("energia", response_json_terreno["energia"])
+        # feature_terreno.setAttribute("agua", response_json_terreno["agua"])
+        # feature_terreno.setAttribute("alcantarillado", response_json_terreno["alcantarillado"])
+        # feature_terreno.setAttribute("telefono", response_json_terreno["telefono"])
+        # feature_terreno.setAttribute("internet", response_json_terreno["internet"])
+        # feature_terreno.setAttribute("transporte", response_json_terreno["transporte"])
                 
-        feature_terreno.setAttribute("frente", response_json_terreno["frente"])
-        feature_terreno.setAttribute("fondo", response_json_terreno["fondo"])
-        feature_terreno.setAttribute("suptest", response_json_terreno["suptest"])
+        # feature_terreno.setAttribute("frente", response_json_terreno["frente"])
+        # feature_terreno.setAttribute("fondo", response_json_terreno["fondo"])
+        # feature_terreno.setAttribute("suptest", response_json_terreno["suptest"])
         
-        feature_terreno.setAttribute("manzano", response_json_terreno["frente"])
-        feature_terreno.setAttribute("predio", response_json_terreno["fondo"])
-        feature_terreno.setAttribute("subpredio", response_json_terreno["suptest"])
-        feature_terreno.setAttribute("base", response_json_terreno["suptest"])
+        # feature_terreno.setAttribute("manzano", response_json_terreno["frente"])
+        # feature_terreno.setAttribute("predio", response_json_terreno["fondo"])
+        # feature_terreno.setAttribute("subpredio", response_json_terreno["suptest"])
+        # feature_terreno.setAttribute("base", response_json_terreno["suptest"])
 
-        feature_terreno.setAttribute("nombre", response_json_terreno["titularBean"]["nombre"])
-        feature_terreno.setAttribute("apellidos", response_json_terreno["titularBean"]["apellidos"])
-        feature_terreno.setAttribute("documento", response_json_terreno["titularBean"]["documento"])        
+        # feature_terreno.setAttribute("nombre", response_json_terreno["titularBean"]["nombre"])
+        # feature_terreno.setAttribute("apellidos", response_json_terreno["titularBean"]["apellidos"])
+        # feature_terreno.setAttribute("documento", response_json_terreno["titularBean"]["documento"])        
         
-        feature_terreno.setAttribute("tipo_doc", response_json_terreno["titularBean"]["tipoDocumento"]["tipo"])
-        feature_terreno.setAttribute("caracter", response_json_terreno["titularBean"]["caracterTitular"]["caracter"])
-        feature_terreno.setAttribute("documento_prop", response_json_terreno["titularBean"]["documentoPropiedad"]["documento"])
-        feature_terreno.setAttribute("adquisicion", response_json_terreno["titularBean"]["adquisicionBean"]["adquisicion"])
+        # feature_terreno.setAttribute("tipo_doc", response_json_terreno["titularBean"]["tipoDocumento"]["tipo"])
+        # feature_terreno.setAttribute("caracter", response_json_terreno["titularBean"]["caracterTitular"]["caracter"])
+        # feature_terreno.setAttribute("documento_prop", response_json_terreno["titularBean"]["documentoPropiedad"]["documento"])
+        # feature_terreno.setAttribute("adquisicion", response_json_terreno["titularBean"]["adquisicionBean"]["adquisicion"])
 
-        feature_terreno.setAttribute("tipovia", response_json_terreno["tipoVia"]["tipo"])
-        feature_terreno.setAttribute("valorvia", response_json_terreno["tipoVia"]["valor"])
+        # feature_terreno.setAttribute("tipovia", response_json_terreno["tipoVia"]["tipo"])
+        # feature_terreno.setAttribute("valorvia", response_json_terreno["tipoVia"]["valor"])
         
-        feature_terreno.setAttribute("nombretopo", response_json_terreno["topografiaBean"]["nombre"])        
-        feature_terreno.setAttribute("descrtopo", response_json_terreno["topografiaBean"]["descripcion"])
-        feature_terreno.setAttribute("valortopo", response_json_terreno["topografiaBean"]["valor"])
+        # feature_terreno.setAttribute("nombretopo", response_json_terreno["topografiaBean"]["nombre"])        
+        # feature_terreno.setAttribute("descrtopo", response_json_terreno["topografiaBean"]["descripcion"])
+        # feature_terreno.setAttribute("valortopo", response_json_terreno["topografiaBean"]["valor"])
 
        
         
-        layer_terreno_provider.addFeatures([feature_terreno])
+        # layer_terreno_provider.addFeatures([feature_terreno])
+
+        feature_terreno = [f for f in layer_terreno.getFeatures()][0]
         
         
         
@@ -3744,8 +3449,8 @@ class ColegioRiberalta:
         
         items[0].setText("")
         items[1].setText("")
-        items[2].setText(feature_terreno["fondo"])
-        items[3].setText(feature_terreno["frente"])
+        items[2].setText(str(feature_terreno["fondo"]))
+        items[3].setText(str(feature_terreno["frente"]))
         
         items[4].setText(str(round(feature_terreno["superficie"],2)))
         
@@ -3869,8 +3574,6 @@ class ColegioRiberalta:
         valor_busqueda = text_busqueda.toPlainText()
             
 
-
-
         try: 
             q = ''
             for e in valor_busqueda.split(): 
@@ -3915,125 +3618,132 @@ class ColegioRiberalta:
         
         
         
-        urlTerreno19 = "http://192.168.0.150:8080/apiCatastro/terrenos19/" + list_widget_name_ref
+        # urlTerreno19 = "http://192.168.0.150:8080/apiCatastro/terrenos19/" + list_widget_name_ref
         
-        response_terreno = requests.get(urlTerreno19)
-        
-        
-        if response_terreno.status_code == 200:
-            response_json_terreno = response_terreno.json()
-            
-                
-        
-        layer_terreno = QgsVectorLayer("Polygon?crs=EPSG:32719","terreno","memory")
-        layer_terreno_provider = layer_terreno.dataProvider()
+        # response_terreno = requests.get(urlTerreno19)
         
         
-        campo_codigo = QgsField("codigo",QVariant.String)
-        campo_direccion = QgsField("direccion",QVariant.String)
-        campo_superficie = QgsField("superficie",QVariant.Double)
-        
-        campo_barrio = QgsField("barrio",QVariant.String)
-        
-        
-        campo_agua = QgsField("agua", QVariant.Bool)
-        campo_energia = QgsField("energia", QVariant.Bool)
-        campo_alcantarillado = QgsField("alcantarillado", QVariant.Bool)
-        campo_telefono = QgsField("telefono", QVariant.Bool)
-        campo_internet = QgsField("internet", QVariant.Bool)
-        campo_transporte = QgsField("transporte", QVariant.Bool)
-        
-        campo_frente = QgsField("frente",QVariant.String)
-        campo_fondo = QgsField("fondo",QVariant.String)
-        campo_suptest = QgsField("suptest",QVariant.String)
+        # if response_terreno.status_code == 200:
+        #     response_json_terreno = response_terreno.json()
+        params = self.driver.params
+        uri = QgsDataSourceUri()
+        uri.setConnection(params['host'],params['port'],params['dbname'],params['user'],params['password'])
+        sql = f''' select * from catastro.terrenosvista19  where codigo = '{list_widget_name_ref}' '''
+        uri.setDataSource('',f'({sql})','geom','','id')
+        layer_terreno = QgsVectorLayer(uri.uri(False),'layer_construcciones','postgres')
 
-        campo_manzano = QgsField("manzano",QVariant.String)
-        campo_predio = QgsField("predio",QVariant.String)
-        campo_sub = QgsField("subpredio",QVariant.String)
-        campo_base = QgsField("base",QVariant.String)
-        
-        campo_nombre = QgsField("nombre",QVariant.String)
-        campo_apellidos = QgsField("apellidos",QVariant.String)
-        campo_documento = QgsField("documento",QVariant.String)
-        
-        campo_tipo_doc = QgsField("tipo_doc",QVariant.String)
-        campo_caracter = QgsField("caracter",QVariant.String)
-        campo_documento_prop = QgsField("documento_prop",QVariant.String)
-        campo_adquisicion = QgsField("adquisicion",QVariant.String)
-        
-        campo_tipovia = QgsField("tipovia",QVariant.String)
-        campo_valorvia = QgsField("valorvia",QVariant.Double)
-        
-        campo_nombretopo = QgsField("nombretopo",QVariant.String)
-        campo_descrtopo = QgsField("descrtopo",QVariant.String) 
-        campo_valortopo = QgsField("valortopo",QVariant.Double)        
-        
-        campo_valorzona = QgsField("valorzona",QVariant.Double)  
-        campo_valorubicacion = QgsField("valorubicacion",QVariant.Double)  
-        campo_valormaterialvia = QgsField("valormaterialvia",QVariant.Double)  
-        campo_valorforma = QgsField("valorforma",QVariant.Double) 
-        
-        terreno_fields = [campo_codigo,campo_direccion,campo_superficie,campo_barrio,campo_energia,campo_agua,campo_alcantarillado,campo_telefono,campo_internet,
-        campo_transporte,campo_frente,campo_fondo,campo_suptest,campo_manzano,campo_predio,campo_sub,campo_base,
-        campo_nombre,campo_apellidos, campo_documento,campo_tipo_doc,campo_caracter,campo_documento_prop,campo_adquisicion,campo_tipovia,campo_valorvia,campo_nombretopo,
-        campo_descrtopo,campo_valortopo, campo_valorzona, campo_valorubicacion, campo_valormaterialvia, campo_valorforma]
-        
-        
-        layer_terreno_provider.addAttributes(terreno_fields)
-        layer_terreno.updateFields()
+        feature_terreno = [f for f in layer_terreno.getFeatures()][0]        
         
 
+        # layer_terreno = QgsVectorLayer("Polygon?crs=EPSG:32719","terreno","memory")
+        # layer_terreno_provider = layer_terreno.dataProvider()
         
-        feature_terreno = QgsFeature()
         
-        feature_terreno.setFields(layer_terreno.fields())
+        # campo_codigo = QgsField("codigo",QVariant.String)
+        # campo_direccion = QgsField("direccion",QVariant.String)
+        # campo_superficie = QgsField("superficie",QVariant.Double)
+        
+        # campo_barrio = QgsField("barrio",QVariant.String)
+        
+        
+        # campo_agua = QgsField("agua", QVariant.Bool)
+        # campo_energia = QgsField("energia", QVariant.Bool)
+        # campo_alcantarillado = QgsField("alcantarillado", QVariant.Bool)
+        # campo_telefono = QgsField("telefono", QVariant.Bool)
+        # campo_internet = QgsField("internet", QVariant.Bool)
+        # campo_transporte = QgsField("transporte", QVariant.Bool)
+        
+        # campo_frente = QgsField("frente",QVariant.String)
+        # campo_fondo = QgsField("fondo",QVariant.String)
+        # campo_suptest = QgsField("suptest",QVariant.String)
+
+        # campo_manzano = QgsField("manzano",QVariant.String)
+        # campo_predio = QgsField("predio",QVariant.String)
+        # campo_sub = QgsField("subpredio",QVariant.String)
+        # campo_base = QgsField("base",QVariant.String)
+        
+        # campo_nombre = QgsField("nombre",QVariant.String)
+        # campo_apellidos = QgsField("apellidos",QVariant.String)
+        # campo_documento = QgsField("documento",QVariant.String)
+        
+        # campo_tipo_doc = QgsField("tipo_doc",QVariant.String)
+        # campo_caracter = QgsField("caracter",QVariant.String)
+        # campo_documento_prop = QgsField("documento_prop",QVariant.String)
+        # campo_adquisicion = QgsField("adquisicion",QVariant.String)
+        
+        # campo_tipovia = QgsField("tipovia",QVariant.String)
+        # campo_valorvia = QgsField("valorvia",QVariant.Double)
+        
+        # campo_nombretopo = QgsField("nombretopo",QVariant.String)
+        # campo_descrtopo = QgsField("descrtopo",QVariant.String) 
+        # campo_valortopo = QgsField("valortopo",QVariant.Double)        
+        
+        # campo_valorzona = QgsField("valorzona",QVariant.Double)  
+        # campo_valorubicacion = QgsField("valorubicacion",QVariant.Double)  
+        # campo_valormaterialvia = QgsField("valormaterialvia",QVariant.Double)  
+        # campo_valorforma = QgsField("valorforma",QVariant.Double) 
+        
+        # terreno_fields = [campo_codigo,campo_direccion,campo_superficie,campo_barrio,campo_energia,campo_agua,campo_alcantarillado,campo_telefono,campo_internet,
+        # campo_transporte,campo_frente,campo_fondo,campo_suptest,campo_manzano,campo_predio,campo_sub,campo_base,
+        # campo_nombre,campo_apellidos, campo_documento,campo_tipo_doc,campo_caracter,campo_documento_prop,campo_adquisicion,campo_tipovia,campo_valorvia,campo_nombretopo,
+        # campo_descrtopo,campo_valortopo, campo_valorzona, campo_valorubicacion, campo_valormaterialvia, campo_valorforma]
+        
+        
+        # layer_terreno_provider.addAttributes(terreno_fields)
+        # layer_terreno.updateFields()
+        
+
+        
+        # feature_terreno = QgsFeature()
+        
+        # feature_terreno.setFields(layer_terreno.fields())
         
               
-        feature_terreno.setAttribute("codigo", response_json_terreno["codigo"])
+        # feature_terreno.setAttribute("codigo", response_json_terreno["codigo"])
         
-        feature_terreno.setAttribute("direccion", response_json_terreno["direccion"])
-        feature_terreno.setAttribute("superficie", response_json_terreno["superficie"])
-        feature_terreno.setAttribute("barrio", response_json_terreno["barrio"])
+        # feature_terreno.setAttribute("direccion", response_json_terreno["direccion"])
+        # feature_terreno.setAttribute("superficie", response_json_terreno["superficie"])
+        # feature_terreno.setAttribute("barrio", response_json_terreno["barrio"])
         
-        feature_terreno.setAttribute("energia", response_json_terreno["energia"])
-        feature_terreno.setAttribute("agua", response_json_terreno["agua"])
-        feature_terreno.setAttribute("alcantarillado", response_json_terreno["alcantarillado"])
-        feature_terreno.setAttribute("telefono", response_json_terreno["telefono"])
-        feature_terreno.setAttribute("internet", response_json_terreno["internet"])
-        feature_terreno.setAttribute("transporte", response_json_terreno["transporte"])
+        # feature_terreno.setAttribute("energia", response_json_terreno["energia"])
+        # feature_terreno.setAttribute("agua", response_json_terreno["agua"])
+        # feature_terreno.setAttribute("alcantarillado", response_json_terreno["alcantarillado"])
+        # feature_terreno.setAttribute("telefono", response_json_terreno["telefono"])
+        # feature_terreno.setAttribute("internet", response_json_terreno["internet"])
+        # feature_terreno.setAttribute("transporte", response_json_terreno["transporte"])
                 
-        feature_terreno.setAttribute("frente", response_json_terreno["frente"])
-        feature_terreno.setAttribute("fondo", response_json_terreno["fondo"])
-        feature_terreno.setAttribute("suptest", response_json_terreno["suptest"])
+        # feature_terreno.setAttribute("frente", response_json_terreno["frente"])
+        # feature_terreno.setAttribute("fondo", response_json_terreno["fondo"])
+        # feature_terreno.setAttribute("suptest", response_json_terreno["suptest"])
         
-        feature_terreno.setAttribute("manzano", response_json_terreno["frente"])
-        feature_terreno.setAttribute("predio", response_json_terreno["fondo"])
-        feature_terreno.setAttribute("subpredio", response_json_terreno["suptest"])
-        feature_terreno.setAttribute("base", response_json_terreno["suptest"])
+        # feature_terreno.setAttribute("manzano", response_json_terreno["frente"])
+        # feature_terreno.setAttribute("predio", response_json_terreno["fondo"])
+        # feature_terreno.setAttribute("subpredio", response_json_terreno["suptest"])
+        # feature_terreno.setAttribute("base", response_json_terreno["suptest"])
 
-        feature_terreno.setAttribute("nombre", response_json_terreno["titularBean"]["nombre"])
-        feature_terreno.setAttribute("apellidos", response_json_terreno["titularBean"]["apellidos"])
-        feature_terreno.setAttribute("documento", response_json_terreno["titularBean"]["documento"])        
+        # feature_terreno.setAttribute("nombre", response_json_terreno["titularBean"]["nombre"])
+        # feature_terreno.setAttribute("apellidos", response_json_terreno["titularBean"]["apellidos"])
+        # feature_terreno.setAttribute("documento", response_json_terreno["titularBean"]["documento"])        
         
-        feature_terreno.setAttribute("tipo_doc", response_json_terreno["titularBean"]["tipoDocumento"]["tipo"])
-        feature_terreno.setAttribute("caracter", response_json_terreno["titularBean"]["caracterTitular"]["caracter"])
-        feature_terreno.setAttribute("documento_prop", response_json_terreno["titularBean"]["documentoPropiedad"]["documento"])
-        feature_terreno.setAttribute("adquisicion", response_json_terreno["titularBean"]["adquisicionBean"]["adquisicion"])
+        # feature_terreno.setAttribute("tipo_doc", response_json_terreno["titularBean"]["tipoDocumento"]["tipo"])
+        # feature_terreno.setAttribute("caracter", response_json_terreno["titularBean"]["caracterTitular"]["caracter"])
+        # feature_terreno.setAttribute("documento_prop", response_json_terreno["titularBean"]["documentoPropiedad"]["documento"])
+        # feature_terreno.setAttribute("adquisicion", response_json_terreno["titularBean"]["adquisicionBean"]["adquisicion"])
 
-        feature_terreno.setAttribute("tipovia", response_json_terreno["tipoVia"]["tipo"])
-        feature_terreno.setAttribute("valorvia", response_json_terreno["tipoVia"]["valor"])
+        # feature_terreno.setAttribute("tipovia", response_json_terreno["tipoVia"]["tipo"])
+        # feature_terreno.setAttribute("valorvia", response_json_terreno["tipoVia"]["valor"])
         
-        feature_terreno.setAttribute("nombretopo", response_json_terreno["topografiaBean"]["nombre"])        
-        feature_terreno.setAttribute("descrtopo", response_json_terreno["topografiaBean"]["descripcion"])
-        feature_terreno.setAttribute("valortopo", response_json_terreno["topografiaBean"]["valor"])
+        # feature_terreno.setAttribute("nombretopo", response_json_terreno["topografiaBean"]["nombre"])        
+        # feature_terreno.setAttribute("descrtopo", response_json_terreno["topografiaBean"]["descripcion"])
+        # feature_terreno.setAttribute("valortopo", response_json_terreno["topografiaBean"]["valor"])
         
-        feature_terreno.setAttribute("valorzona", response_json_terreno["zonaBean"]["valorCatastral"])
-        feature_terreno.setAttribute("valorubicacion", response_json_terreno["ubicacionBean"]["valor"])
-        feature_terreno.setAttribute("valormaterialvia", response_json_terreno["materialViaBean"]["valor"])
-        feature_terreno.setAttribute("valorforma", response_json_terreno["formaBean"]["valor"])
+        # feature_terreno.setAttribute("valorzona", response_json_terreno["zonaBean"]["valorCatastral"])
+        # feature_terreno.setAttribute("valorubicacion", response_json_terreno["ubicacionBean"]["valor"])
+        # feature_terreno.setAttribute("valormaterialvia", response_json_terreno["materialViaBean"]["valor"])
+        # feature_terreno.setAttribute("valorforma", response_json_terreno["formaBean"]["valor"])
   
         
-        layer_terreno_provider.addFeatures([feature_terreno])        
+        # layer_terreno_provider.addFeatures([feature_terreno])        
         
         
         
@@ -4150,7 +3860,7 @@ class ColegioRiberalta:
         
         items[20].setText(str(round(feature_terreno["superficie"],2)))
         
-        items[21].setText(feature_terreno["suptest"])
+        items[21].setText(str(feature_terreno["suptest"]))
         
         
         items[19].setText(" - ")
@@ -4166,15 +3876,17 @@ class ColegioRiberalta:
             # items[22].setText(" - ")
             # items[23].setText(" - ")
             
-        
-        kfrentefondo = float(feature_terreno["frente"]) / float(feature_terreno["fondo"])
+        try:
+            kfrentefondo = float(feature_terreno["frente"]) / float(feature_terreno["fondo"])
+        except ZeroDivisionError: 
+            kfrentefondo = 0
         
         
 
         
         # if feature_terreno["formaBean"]["valor"] == null:        
-        items[24].setText(str(round(feature_terreno["valorzona"] * feature_terreno["superficie"] * coeficiente_servicios * 
-        feature_terreno["valorubicacion"] * feature_terreno["valortopo"] * feature_terreno["valormaterialvia"] * 
+        items[24].setText(str(round(feature_terreno["valorubicacion"] * feature_terreno["superficie"] * coeficiente_servicios * 
+        feature_terreno["valorubicacion"] * feature_terreno["valortopo"] * feature_terreno["valormaterialvial"] * 
         kfrentefondo,2)))
 
         # else:
@@ -4191,7 +3903,7 @@ class ColegioRiberalta:
         #this creates a QgsLayoutExporter object
         exporter = QgsLayoutExporter(layout)       
 
-        print(exporter)
+        # print(exporter)
 
         #this exports a pdf of the layout object
         exporter.exportToPdf(self.plugin_dir + '/CertificadoCatastral.pdf', QgsLayoutExporter.PdfExportSettings()) 
@@ -4210,31 +3922,20 @@ class ColegioRiberalta:
     
     def cargar_tablabbdd4(self):
     
-        urlTerrenos19 = "http://192.168.0.150:8080/apiCatastro/terrenos19"       
-                
-        response = requests.get(urlTerrenos19)
-        
-        responseArray = []
-        
-        if response.status_code == 200:
-            response_json = response.json()
-            
+  
         list_widget = self.dlg_informe3.list_bbdd
         
         for i in range(list_widget.count()):
             list_widget.takeItem(0)
         
-        lista = []
+
+        r = self.driver.read('select * from catastro.terrenosvista19')
                 
-        for item in response_json:
-            if item["titularBean"]:
-                lista.append(str(item["codigo"]) + "   " + str(item["titularBean"]["nombre"])  + "   " + str(item["titularBean"]["nombre"]))
-            else:
-                lista.append(str(item["codigo"]))
-       
+        lista = [str(item["codigo"]) + "   " + str(item["nombre"])  + "   " + str(item["nombre"]) for item in r]
+ 
         list_widget.addItems(lista)
         
-        self.lista_terreno_informe3 = response_json
+        self.lista_terreno_informe3 = r
         
 
         
@@ -4244,20 +3945,24 @@ class ColegioRiberalta:
     def listar_layer_informe4_busca_ref(self):
         
         list_widget = self.dlg_informe3.list_bbdd
+
+
         
-        for i in range(list_widget.count()):
-            list_widget.takeItem(0)
+        
             
         text_busqueda  = self.dlg_select_terreno_informe3_busca_ref.text_titular
         valor_busqueda = text_busqueda.toPlainText()
-            
-        lista = []
-              
-        for item in self.lista_terreno_informe3:      
-            if valor_busqueda == str(item["codigo"]):
-                lista.append(str(item["codigo"]) + "   " + str(item["titularBean"]["nombre"]) + " " + str(item["titularBean"]["apellidos"]))
 
-        list_widget.addItems(lista)
+
+        r = self.driver.read(f'''select * from catastro.terrenosvista19 where codigo = '{valor_busqueda}' ''')
+        if len(r) > 0:
+            for i in range(list_widget.count()):
+                list_widget.takeItem(0)
+            lista = [str(item["codigo"]) + "   " + str(item["nombre"]) + " " + str(item["apellidos"]) for item in r]
+            list_widget.addItems(lista)
+        else: 
+            self.driver.showMessage('No existen registros con la Referencia Catastral.',1,15)
+
         
 
         
@@ -4268,22 +3973,29 @@ class ColegioRiberalta:
     
         list_widget = self.dlg_informe3.list_bbdd
             
-        for i in range(list_widget.count()):
-            list_widget.takeItem(0)
+        
             
         text_busqueda  = self.dlg_select_terreno_informe3_busca_nombre.text_titular
         valor_busqueda = text_busqueda.toPlainText()
             
-        lista = []
-              
-        for item in self.lista_terreno_informe3: 
-        
-            nombreyapellidos = str(item["titularBean"]["nombre"]) + " " + str(item["titularBean"]["apellidos"])
-        
-            if valor_busqueda in nombreyapellidos:
-                lista.append(str(item["codigo"]) + "   " + str(item["titularBean"]["nombre"]) + " " + str(item["titularBean"]["apellidos"]))
+        try: 
+            q = ''
+            for e in valor_busqueda.split(): 
+                q  = q + '%' + e + '% '
 
-        list_widget.addItems(lista)
+            sql = f''' select codigo, nombre, apellidos, documento from catastro.terrenosvista19 where nombre || ' ' || apellidos ilike '{q[:-1]}' '''
+            r = self.driver.read(sql)
+            if len(r) > 0:
+                for i in range(list_widget.count()):
+                    list_widget.takeItem(0)
+                lista = [str(item["codigo"]) + "   " + str(item["nombre"]) + " " + str(item["apellidos"]) for item in r]
+                list_widget.addItems(lista)
+            else: 
+                self.driver.showMessage('No existen registros con los valores buscados.',1,15)
+                    
+
+        except Exception as ex: 
+            print(ex)
         
                 
         
@@ -4313,29 +4025,18 @@ class ColegioRiberalta:
         list_widget_const = self.dlg_listar_construccion.list_bbdd
  
         for i in range(list_widget_const.count()):
-           
             list_widget_const.takeItem(0)
- 
-        
-        urlConstrucciones19 = "http://192.168.0.150:8080/apiCatastro/construcciones19"       
-                
-        response = requests.get(urlConstrucciones19)
-        
-        responseArray = []
-        
-        if response.status_code == 200:
-            response_json = response.json()
-        
 
-        lista = []
+        r = self.driver.read(f''' select * from catastro.construccionesvista19 where codigo = '{list_widget_name_ref}' ''')
+        # print(r)
+        if len(r) > 0: 
+            lista = [str(item["codigo"]) + "   " + str(item["cod"]) + "   " + str(item["estado"]) for item in r]
+            list_widget_const.addItems(lista)
+        else: 
+            self.driver.showMessage('No existen Construcciones en el lote Seleccionado.',1,15)
         
-       
-        for feature_contruccion in response_json:
-            if feature_contruccion["terrenos19"]["codigo"] == list_widget_name_ref:
-                lista.append(str(feature_contruccion["terrenos19"]["codigo"]) + "   " + str(feature_contruccion["cod"]) + "   " + str(feature_contruccion["conservacionBean"]["estado"])
-                + "   " + str(feature_contruccion["revestimientoBean"]["revestimiento"]))
-
-        list_widget_const.addItems(lista)
+        
+        
         
 
         
@@ -4344,23 +4045,26 @@ class ColegioRiberalta:
     
         QgsProject.instance().removeAllMapLayers()
     
-        list_widget = self.dlg_informe3.list_bbdd
+        list_widget = self.dlg_listar_construccion.list_bbdd
         
         current = list_widget.currentItem()
         
         
         #Obtengo el texto del QListWidgetItem
         list_widget_name = current.text()
+        query_params = list_widget_name.split('   ')
+        print(query_params)
         
-        list_widget_name_ref = ""
+        # list_widget_name_ref = ""
         
-        for asa in range(len(list_widget_name)):
-            if list_widget_name[asa] == " ":
-                ran = asa
-                break
+        # for asa in range(len(list_widget_name)):
+        #     if list_widget_name[asa] == " ":
+        #         ran = asa
+        #         break
         
         
-        list_widget_name_ref = list_widget_name[0:ran]
+        # list_widget_name_ref = list_widget_name[0:ran]
+        # print(list_widget_name_ref)
         
         #guardo las features del layer creado de la bbdd
         # features = self.layercargado.getFeatures()
@@ -4417,196 +4121,212 @@ class ColegioRiberalta:
         
         # print(list(features_plan))
                 
+        params = self.driver.params
+        uri = QgsDataSourceUri()
+        uri.setConnection(params['host'],params['port'],params['dbname'],params['user'],params['password'])
+        sql = f''' select * from catastro.terrenosvista19  where codigo = '{query_params[0]}' '''
+        uri.setDataSource('',f'({sql})','geom','','id')
+        layer_terreno = QgsVectorLayer(uri.uri(False),'layer_terreno','postgres')
 
+        feature_terreno = [f for f in layer_terreno.getFeatures()][0]
 
                 
         
         
-        urlTerreno19 = "http://192.168.0.150:8080/apiCatastro/terrenos19/" + list_widget_name_ref
+        # urlTerreno19 = "http://192.168.0.150:8080/apiCatastro/terrenos19/" + list_widget_name_ref
         
-        response_terreno = requests.get(urlTerreno19)
+        # response_terreno = requests.get(urlTerreno19)
         
         
-        if response_terreno.status_code == 200:
-            response_json_terreno = response_terreno.json()
+        # if response_terreno.status_code == 200:
+        #     response_json_terreno = response_terreno.json()
             
                 
         
-        layer_terreno = QgsVectorLayer("Polygon?crs=EPSG:32719","terreno","memory")
-        layer_terreno_provider = layer_terreno.dataProvider()
+        # layer_terreno = QgsVectorLayer("Polygon?crs=EPSG:32719","terreno","memory")
+        # layer_terreno_provider = layer_terreno.dataProvider()
         
         
-        campo_codigo = QgsField("codigo",QVariant.String)
-        campo_direccion = QgsField("direccion",QVariant.String)
-        campo_superficie = QgsField("superficie",QVariant.Double)
+        # campo_codigo = QgsField("codigo",QVariant.String)
+        # campo_direccion = QgsField("direccion",QVariant.String)
+        # campo_superficie = QgsField("superficie",QVariant.Double)
         
-        campo_barrio = QgsField("barrio",QVariant.String)
+        # campo_barrio = QgsField("barrio",QVariant.String)
         
         
-        campo_agua = QgsField("agua", QVariant.Bool)
-        campo_energia = QgsField("energia", QVariant.Bool)
-        campo_alcantarillado = QgsField("alcantarillado", QVariant.Bool)
-        campo_telefono = QgsField("telefono", QVariant.Bool)
-        campo_internet = QgsField("internet", QVariant.Bool)
-        campo_transporte = QgsField("transporte", QVariant.Bool)
+        # campo_agua = QgsField("agua", QVariant.Bool)
+        # campo_energia = QgsField("energia", QVariant.Bool)
+        # campo_alcantarillado = QgsField("alcantarillado", QVariant.Bool)
+        # campo_telefono = QgsField("telefono", QVariant.Bool)
+        # campo_internet = QgsField("internet", QVariant.Bool)
+        # campo_transporte = QgsField("transporte", QVariant.Bool)
         
-        campo_frente = QgsField("frente",QVariant.String)
-        campo_fondo = QgsField("fondo",QVariant.String)
-        campo_suptest = QgsField("suptest",QVariant.String)
+        # campo_frente = QgsField("frente",QVariant.String)
+        # campo_fondo = QgsField("fondo",QVariant.String)
+        # campo_suptest = QgsField("suptest",QVariant.String)
 
-        campo_manzano = QgsField("manzano",QVariant.String)
-        campo_predio = QgsField("predio",QVariant.String)
-        campo_sub = QgsField("subpredio",QVariant.String)
-        campo_base = QgsField("base",QVariant.String)
+        # campo_manzano = QgsField("manzano",QVariant.String)
+        # campo_predio = QgsField("predio",QVariant.String)
+        # campo_sub = QgsField("subpredio",QVariant.String)
+        # campo_base = QgsField("base",QVariant.String)
         
-        campo_nombre = QgsField("nombre",QVariant.String)
-        campo_apellidos = QgsField("apellidos",QVariant.String)
-        campo_documento = QgsField("documento",QVariant.String)
+        # campo_nombre = QgsField("nombre",QVariant.String)
+        # campo_apellidos = QgsField("apellidos",QVariant.String)
+        # campo_documento = QgsField("documento",QVariant.String)
         
-        campo_tipo_doc = QgsField("tipo_doc",QVariant.String)
-        campo_caracter = QgsField("caracter",QVariant.String)
-        campo_documento_prop = QgsField("documento_prop",QVariant.String)
-        campo_adquisicion = QgsField("adquisicion",QVariant.String)
+        # campo_tipo_doc = QgsField("tipo_doc",QVariant.String)
+        # campo_caracter = QgsField("caracter",QVariant.String)
+        # campo_documento_prop = QgsField("documento_prop",QVariant.String)
+        # campo_adquisicion = QgsField("adquisicion",QVariant.String)
         
-        campo_tipovia = QgsField("tipovia",QVariant.String)
-        campo_valorvia = QgsField("valorvia",QVariant.Double)
+        # campo_tipovia = QgsField("tipovia",QVariant.String)
+        # campo_valorvia = QgsField("valorvia",QVariant.Double)
         
-        campo_nombretopo = QgsField("nombretopo",QVariant.String)
-        campo_descrtopo = QgsField("descrtopo",QVariant.String) 
-        campo_valortopo = QgsField("valortopo",QVariant.Double)        
+        # campo_nombretopo = QgsField("nombretopo",QVariant.String)
+        # campo_descrtopo = QgsField("descrtopo",QVariant.String) 
+        # campo_valortopo = QgsField("valortopo",QVariant.Double)        
         
-        campo_valorzona = QgsField("valorzona",QVariant.Double)  
-        campo_valorubicacion = QgsField("valorubicacion",QVariant.Double)  
-        campo_valormaterialvia = QgsField("valormaterialvia",QVariant.Double)
-        campo_valorforma = QgsField("valorforma",QVariant.Double)                 
+        # campo_valorzona = QgsField("valorzona",QVariant.Double)  
+        # campo_valorubicacion = QgsField("valorubicacion",QVariant.Double)  
+        # campo_valormaterialvia = QgsField("valormaterialvia",QVariant.Double)
+        # campo_valorforma = QgsField("valorforma",QVariant.Double)                 
         
-        terreno_fields = [campo_codigo,campo_direccion,campo_superficie,campo_barrio,campo_energia,campo_agua,campo_alcantarillado,campo_telefono,campo_internet,
-        campo_transporte,campo_frente,campo_fondo,campo_suptest,campo_manzano,campo_predio,campo_sub,campo_base,
-        campo_nombre,campo_apellidos, campo_documento,campo_tipo_doc,campo_caracter,campo_documento_prop,campo_adquisicion,campo_tipovia,campo_valorvia,campo_nombretopo,
-        campo_descrtopo,campo_valortopo, campo_valorzona, campo_valorubicacion, campo_valormaterialvia, campo_valorforma]
+        # terreno_fields = [campo_codigo,campo_direccion,campo_superficie,campo_barrio,campo_energia,campo_agua,campo_alcantarillado,campo_telefono,campo_internet,
+        # campo_transporte,campo_frente,campo_fondo,campo_suptest,campo_manzano,campo_predio,campo_sub,campo_base,
+        # campo_nombre,campo_apellidos, campo_documento,campo_tipo_doc,campo_caracter,campo_documento_prop,campo_adquisicion,campo_tipovia,campo_valorvia,campo_nombretopo,
+        # campo_descrtopo,campo_valortopo, campo_valorzona, campo_valorubicacion, campo_valormaterialvia, campo_valorforma]
         
         
-        layer_terreno_provider.addAttributes(terreno_fields)
-        layer_terreno.updateFields()
+        # layer_terreno_provider.addAttributes(terreno_fields)
+        # layer_terreno.updateFields()
         
 
         
-        feature_terreno = QgsFeature()
+        # feature_terreno = QgsFeature()
         
-        feature_terreno.setFields(layer_terreno.fields())
+        # feature_terreno.setFields(layer_terreno.fields())
         
               
-        feature_terreno.setAttribute("codigo", response_json_terreno["codigo"])
+        # feature_terreno.setAttribute("codigo", response_json_terreno["codigo"])
         
-        feature_terreno.setAttribute("direccion", response_json_terreno["direccion"])
-        feature_terreno.setAttribute("superficie", response_json_terreno["superficie"])
-        feature_terreno.setAttribute("barrio", response_json_terreno["barrio"])
+        # feature_terreno.setAttribute("direccion", response_json_terreno["direccion"])
+        # feature_terreno.setAttribute("superficie", response_json_terreno["superficie"])
+        # feature_terreno.setAttribute("barrio", response_json_terreno["barrio"])
         
-        feature_terreno.setAttribute("energia", response_json_terreno["energia"])
-        feature_terreno.setAttribute("agua", response_json_terreno["agua"])
-        feature_terreno.setAttribute("alcantarillado", response_json_terreno["alcantarillado"])
-        feature_terreno.setAttribute("telefono", response_json_terreno["telefono"])
-        feature_terreno.setAttribute("internet", response_json_terreno["internet"])
-        feature_terreno.setAttribute("transporte", response_json_terreno["transporte"])
+        # feature_terreno.setAttribute("energia", response_json_terreno["energia"])
+        # feature_terreno.setAttribute("agua", response_json_terreno["agua"])
+        # feature_terreno.setAttribute("alcantarillado", response_json_terreno["alcantarillado"])
+        # feature_terreno.setAttribute("telefono", response_json_terreno["telefono"])
+        # feature_terreno.setAttribute("internet", response_json_terreno["internet"])
+        # feature_terreno.setAttribute("transporte", response_json_terreno["transporte"])
                 
-        feature_terreno.setAttribute("frente", response_json_terreno["frente"])
-        feature_terreno.setAttribute("fondo", response_json_terreno["fondo"])
-        feature_terreno.setAttribute("suptest", response_json_terreno["suptest"])
+        # feature_terreno.setAttribute("frente", response_json_terreno["frente"])
+        # feature_terreno.setAttribute("fondo", response_json_terreno["fondo"])
+        # feature_terreno.setAttribute("suptest", response_json_terreno["suptest"])
         
-        feature_terreno.setAttribute("manzano", response_json_terreno["frente"])
-        feature_terreno.setAttribute("predio", response_json_terreno["fondo"])
-        feature_terreno.setAttribute("subpredio", response_json_terreno["suptest"])
-        feature_terreno.setAttribute("base", response_json_terreno["suptest"])
+        # feature_terreno.setAttribute("manzano", response_json_terreno["frente"])
+        # feature_terreno.setAttribute("predio", response_json_terreno["fondo"])
+        # feature_terreno.setAttribute("subpredio", response_json_terreno["suptest"])
+        # feature_terreno.setAttribute("base", response_json_terreno["suptest"])
 
-        feature_terreno.setAttribute("nombre", response_json_terreno["titularBean"]["nombre"])
-        feature_terreno.setAttribute("apellidos", response_json_terreno["titularBean"]["apellidos"])
-        feature_terreno.setAttribute("documento", response_json_terreno["titularBean"]["documento"])        
+        # feature_terreno.setAttribute("nombre", response_json_terreno["titularBean"]["nombre"])
+        # feature_terreno.setAttribute("apellidos", response_json_terreno["titularBean"]["apellidos"])
+        # feature_terreno.setAttribute("documento", response_json_terreno["titularBean"]["documento"])        
         
-        feature_terreno.setAttribute("tipo_doc", response_json_terreno["titularBean"]["tipoDocumento"]["tipo"])
-        feature_terreno.setAttribute("caracter", response_json_terreno["titularBean"]["caracterTitular"]["caracter"])
-        feature_terreno.setAttribute("documento_prop", response_json_terreno["titularBean"]["documentoPropiedad"]["documento"])
-        feature_terreno.setAttribute("adquisicion", response_json_terreno["titularBean"]["adquisicionBean"]["adquisicion"])
+        # feature_terreno.setAttribute("tipo_doc", response_json_terreno["titularBean"]["tipoDocumento"]["tipo"])
+        # feature_terreno.setAttribute("caracter", response_json_terreno["titularBean"]["caracterTitular"]["caracter"])
+        # feature_terreno.setAttribute("documento_prop", response_json_terreno["titularBean"]["documentoPropiedad"]["documento"])
+        # feature_terreno.setAttribute("adquisicion", response_json_terreno["titularBean"]["adquisicionBean"]["adquisicion"])
 
-        feature_terreno.setAttribute("tipovia", response_json_terreno["tipoVia"]["tipo"])
-        feature_terreno.setAttribute("valorvia", response_json_terreno["tipoVia"]["valor"])
+        # feature_terreno.setAttribute("tipovia", response_json_terreno["tipoVia"]["tipo"])
+        # feature_terreno.setAttribute("valorvia", response_json_terreno["tipoVia"]["valor"])
         
-        feature_terreno.setAttribute("nombretopo", response_json_terreno["topografiaBean"]["nombre"])        
-        feature_terreno.setAttribute("descrtopo", response_json_terreno["topografiaBean"]["descripcion"])
-        feature_terreno.setAttribute("valortopo", response_json_terreno["topografiaBean"]["valor"])
+        # feature_terreno.setAttribute("nombretopo", response_json_terreno["topografiaBean"]["nombre"])        
+        # feature_terreno.setAttribute("descrtopo", response_json_terreno["topografiaBean"]["descripcion"])
+        # feature_terreno.setAttribute("valortopo", response_json_terreno["topografiaBean"]["valor"])
         
-        feature_terreno.setAttribute("valorzona", response_json_terreno["zonaBean"]["valorCatastral"])
-        feature_terreno.setAttribute("valorubicacion", response_json_terreno["ubicacionBean"]["valor"])
-        feature_terreno.setAttribute("valormaterialvia", response_json_terreno["materialViaBean"]["valor"])
-        feature_terreno.setAttribute("valorforma", response_json_terreno["formaBean"]["valor"])
-        
-        
-        layer_terreno_provider.addFeatures([feature_terreno]) 
+        # feature_terreno.setAttribute("valorzona", response_json_terreno["zonaBean"]["valorCatastral"])
+        # feature_terreno.setAttribute("valorubicacion", response_json_terreno["ubicacionBean"]["valor"])
+        # feature_terreno.setAttribute("valormaterialvia", response_json_terreno["materialViaBean"]["valor"])
+        # feature_terreno.setAttribute("valorforma", response_json_terreno["formaBean"]["valor"])
         
         
+        # layer_terreno_provider.addFeatures([feature_terreno]) 
         
         
         
-        urlConstrucciones19 = "http://192.168.0.150:8080/apiCatastro/construcciones19"
+        uri = QgsDataSourceUri()
+        uri.setConnection(params['host'],params['port'],params['dbname'],params['user'],params['password'])
+        sql = f''' select * from catastro.construccionesvista19  where codigo = '{query_params[0]}' and cod ='{query_params[1]}' '''
+        uri.setDataSource('',f'({sql})','geom','','id')
+        layer_construcciones = QgsVectorLayer(uri.uri(False),'layer_construcciones','postgres')
+
+        feature_construccion = [f for f in layer_construcciones.getFeatures()][0]
+        # print(len(feature_construccion))
         
-        response_construcciones = requests.get(urlConstrucciones19)
+
+        
+        # urlConstrucciones19 = "http://192.168.0.150:8080/apiCatastro/construcciones19"
+        
+        # response_construcciones = requests.get(urlConstrucciones19)
                 
-        if response_construcciones.status_code == 200:
-            response_json_construcciones = response_construcciones.json()
+        # if response_construcciones.status_code == 200:
+        #     response_json_construcciones = response_construcciones.json()
                 
-        jsonConstruccionesArray = []
+        # jsonConstruccionesArray = []
         
-        for itemConstruccion in response_json_construcciones:          
+        # for itemConstruccion in response_json_construcciones:          
                 
-            if itemConstruccion["terrenos19"] and itemConstruccion["terrenos19"]["codigo"] == response_json_terreno["codigo"]:
+        #     if itemConstruccion["terrenos19"] and itemConstruccion["terrenos19"]["codigo"] == response_json_terreno["codigo"]:
          
-                jsonConstruccionesArray.append(itemConstruccion);
+        #         jsonConstruccionesArray.append(itemConstruccion);
         
         
-        layer_construcciones = QgsVectorLayer("MultiPolygon?crs=32719","construcciones","memory")
+        # layer_construcciones = QgsVectorLayer("MultiPolygon?crs=32719","construcciones","memory")
         
-        campo_id = QgsField("id",QVariant.Int)
-        campo_cod = QgsField("cod",QVariant.Int)
-        campo_aire = QgsField("aire",QVariant.Bool)
-        campo_anyo = QgsField("anyo",QVariant.String)
-        campo_ascensores = QgsField("ascensores",QVariant.Bool)
-        campo_superfice = QgsField("superficie",QVariant.Double)
-        campo_conservacionEstado = QgsField("conservacionestado",QVariant.String)
-        campo_conservacionValor = QgsField("conservacionvalor",QVariant.Double)
-        campo_revestimiento = QgsField("revestimiento",QVariant.String)
-        campo_usoNombre  = QgsField("usonombre",QVariant.String)
-        campo_usoValor  = QgsField("usovalor",QVariant.Double)
+        # campo_id = QgsField("id",QVariant.Int)
+        # campo_cod = QgsField("cod",QVariant.Int)
+        # campo_aire = QgsField("aire",QVariant.Bool)
+        # campo_anyo = QgsField("anyo",QVariant.String)
+        # campo_ascensores = QgsField("ascensores",QVariant.Bool)
+        # campo_superfice = QgsField("superficie",QVariant.Double)
+        # campo_conservacionEstado = QgsField("conservacionestado",QVariant.String)
+        # campo_conservacionValor = QgsField("conservacionvalor",QVariant.Double)
+        # campo_revestimiento = QgsField("revestimiento",QVariant.String)
+        # campo_usoNombre  = QgsField("usonombre",QVariant.String)
+        # campo_usoValor  = QgsField("usovalor",QVariant.Double)
         
           
-        construccion_fields = [campo_id, campo_cod, campo_aire, campo_anyo, campo_ascensores, campo_superfice, campo_conservacionEstado, campo_conservacionValor, campo_revestimiento,
-        campo_usoNombre, campo_usoValor]
+        # construccion_fields = [campo_id, campo_cod, campo_aire, campo_anyo, campo_ascensores, campo_superfice, campo_conservacionEstado, campo_conservacionValor, campo_revestimiento,
+        # campo_usoNombre, campo_usoValor]
            
-        layer_construcciones.dataProvider().addAttributes(construccion_fields)
-        layer_construcciones.updateFields()
+        # layer_construcciones.dataProvider().addAttributes(construccion_fields)
+        # layer_construcciones.updateFields()
         
         
-        arrayCoordenadasConstruccionGeometria = []
-        listFeaturesConstruccion = []
+        # arrayCoordenadasConstruccionGeometria = []
+        # listFeaturesConstruccion = []
         
-        for jsonConstruccionArrayItem in jsonConstruccionesArray:
+        # for jsonConstruccionArrayItem in jsonConstruccionesArray:
         
-            feature_construccion = QgsFeature()
-            feature_construccion.setFields(layer_construcciones.fields())
+        #     feature_construccion = QgsFeature()
+        #     feature_construccion.setFields(layer_construcciones.fields())
             
             
-            feature_construccion.setAttribute("id", jsonConstruccionArrayItem["id"])
-            feature_construccion.setAttribute("cod", jsonConstruccionArrayItem["cod"])
-            feature_construccion.setAttribute("aire", jsonConstruccionArrayItem["aire"])
-            feature_construccion.setAttribute("anyo", jsonConstruccionArrayItem["anyo"])
-            feature_construccion.setAttribute("ascensores", jsonConstruccionArrayItem["ascensores"])
-            feature_construccion.setAttribute("superficie", jsonConstruccionArrayItem["superficie"])
-            feature_construccion.setAttribute("conservacionestado", jsonConstruccionArrayItem["conservacionBean"]["estado"])
-            feature_construccion.setAttribute("conservacionvalor", jsonConstruccionArrayItem["conservacionBean"]["valor"])
-            feature_construccion.setAttribute("revestimiento", jsonConstruccionArrayItem["revestimientoBean"]["revestimiento"])
-            feature_construccion.setAttribute("usonombre", jsonConstruccionArrayItem["usoBean"]["uso"])
-            feature_construccion.setAttribute("usovalor", jsonConstruccionArrayItem["usoBean"]["valor"])
+        #     feature_construccion.setAttribute("id", jsonConstruccionArrayItem["id"])
+        #     feature_construccion.setAttribute("cod", jsonConstruccionArrayItem["cod"])
+        #     feature_construccion.setAttribute("aire", jsonConstruccionArrayItem["aire"])
+        #     feature_construccion.setAttribute("anyo", jsonConstruccionArrayItem["anyo"])
+        #     feature_construccion.setAttribute("ascensores", jsonConstruccionArrayItem["ascensores"])
+        #     feature_construccion.setAttribute("superficie", jsonConstruccionArrayItem["superficie"])
+        #     feature_construccion.setAttribute("conservacionestado", jsonConstruccionArrayItem["conservacionBean"]["estado"])
+        #     feature_construccion.setAttribute("conservacionvalor", jsonConstruccionArrayItem["conservacionBean"]["valor"])
+        #     feature_construccion.setAttribute("revestimiento", jsonConstruccionArrayItem["revestimientoBean"]["revestimiento"])
+        #     feature_construccion.setAttribute("usonombre", jsonConstruccionArrayItem["usoBean"]["uso"])
+        #     feature_construccion.setAttribute("usovalor", jsonConstruccionArrayItem["usoBean"]["valor"])
             
         
-        layer_construcciones.dataProvider().addFeatures(listFeaturesConstruccion)
+        # layer_construcciones.dataProvider().addFeatures(listFeaturesConstruccion)
         
         
  
@@ -4802,16 +4522,19 @@ class ColegioRiberalta:
             # items[46].setText(" - ")
 
         
-         
-        kfrentefondo = float(feature["frente"]) / float(feature["fondo"])
+        try: 
+            kfrentefondo = float(feature_terreno["frente"]) / float(feature_terreno["fondo"])
+        except ZeroDivisionError:
+            kfrentefondo = 0
+
         
-        items[35].setText(str(round(feature_terreno["valorzona"] * feature_terreno["superficie"] * coeficiente_servicios * 
-        feature_terreno["valorubicacion"] * feature_terreno["valortopo"] * feature_terreno["valormaterialvia"] * 
+        items[35].setText(str(round(feature_terreno["valorcomercialzona"] * feature_terreno["superficie"] * coeficiente_servicios * 
+        feature_terreno["valorubicacion"] * feature_terreno["valortopo"] * feature_terreno["valormaterialvial"] * 
         kfrentefondo / feature_terreno["superficie"],2)))
         
         
-        items[36].setText(str(round(feature_terreno["valorzona"] * feature_terreno["superficie"] * coeficiente_servicios * 
-        feature_terreno["valorubicacion"] * feature_terreno["valortopo"] * feature_terreno["valormaterialvia"] * 
+        items[36].setText(str(round(feature_terreno["valorcomercialzona"] * feature_terreno["superficie"] * coeficiente_servicios * 
+        feature_terreno["valorubicacion"] * feature_terreno["valortopo"] * feature_terreno["valormaterialvial"] * 
         kfrentefondo,2)))
         
 
