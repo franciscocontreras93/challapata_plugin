@@ -104,7 +104,7 @@ class DataBaseDriver():
 
         pass
     
-    def read(self,sql,multi=True):
+    def read(self,sql,multi=True,as_dict=True):
         """ Function for Read-only queries
 
         Args:
@@ -117,7 +117,11 @@ class DataBaseDriver():
         
         with self.connection() as conn: 
             try: 
-                cur = conn.cursor(cursor_factory = self.AS_DICT) 
+                if as_dict:
+                    cur = conn.cursor(cursor_factory = self.AS_DICT) 
+                else:
+                    cur = conn.cursor() 
+                    
                 cur.execute(sql)
                 if multi:
                     r = cur.fetchall()

@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/plugins/challapata_plugin" >
+        
+        <file>icon\search.svg</file>
+        <file>icon\trash-solid.svg</file>
+        
+    </qresource>
+</RCC>

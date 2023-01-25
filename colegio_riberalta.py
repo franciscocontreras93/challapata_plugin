@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication, QVariant
+from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication, QVariant, Qt
 from qgis.PyQt.QtGui import QIcon, QFont, QColor
 from qgis.PyQt.QtWidgets import QAction
 from qgis.PyQt.QtXml import QDomDocument
@@ -109,6 +109,8 @@ from .colegio_riberalta_dialog import InfoCodigoDivide1
 from .colegio_riberalta_dialog import InfoCodigoDivide2
 
 from .DriverDataBase import DataBaseDriver
+from .catastro import CatastroWidget,EjesVialesWidget
+from .resources import *
 
 
 
@@ -125,6 +127,8 @@ class ColegioRiberalta:
     """QGIS Plugin Implementation."""
 
     def __init__(self, iface):
+
+        self.ortofoto  = r'D:\GeoSIG\Otros\ALEX-CATASTRO\ortofoto_global.ecw' #! PATH ORTOFOTO
         
         # Save reference to the QGIS interface
         self.iface = iface
@@ -175,6 +179,14 @@ class ColegioRiberalta:
 
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
+
+        icon_path = self.plugin_dir + "/icon/search.png"
+        self.add_action(
+            icon_path,
+            text='Buscar Lotes',
+            callback=self.abrir_busqueda,
+            parent=self.iface.mainWindow())
+
         
         icon_path = self.plugin_dir + "/icon/user.jpg"
         self.add_action(
@@ -273,8 +285,13 @@ class ColegioRiberalta:
             text= 'Separar Terreno',
             callback=self.abrir_guardar_feature_divide,
             parent=self.iface.mainWindow())
-            
 
+        icon_path = self.plugin_dir + "/icon/road.png"
+        self.add_action(icon_path,
+            text= 'Eje de Vias',
+            callback=self.ejes_de_vias,
+            parent=self.iface.mainWindow())
+        
         ######################################################################VARIABLES CARGADAS DE DIALOG##########################################
         
 
@@ -282,6 +299,9 @@ class ColegioRiberalta:
 
         # will be set False in run()
         self.first_start = True
+
+        self.dlg_busqueda = CatastroWidget()
+        self.dlg_ejes_viales = EjesVialesWidget()
         
         self.dlg = ColegioRiberaltaDialog()
         
@@ -946,6 +966,15 @@ class ColegioRiberalta:
 #################################################################################################################################################################
 ##############################################################FUNCIONES DE  ABRIR Y CERRAR DIALOGOS################################################################   
     
+    def abrir_busqueda(self):
+        self.iface.addDockWidget(Qt.LeftDockWidgetArea, self.dlg_busqueda)
+        self.dlg_busqueda.setAllowedAreas(Qt.AllDockWidgetAreas)
+        self.dlg_busqueda.show()
+        self.dlg_busqueda.search()
+
+    def cerrar_busqueda(self):
+        self.dlg_busqueda.close()
+
     def abrir_dialogo_titular(self):
         self.dlg_export_titular.show()
         
@@ -1624,7 +1653,7 @@ class ColegioRiberalta:
             valor_busqueda = ''
             for e in l: 
                 valor_busqueda  = valor_busqueda + '%' + e + '% '
-            print(valor_busqueda)
+            # print(valor_busqueda)
             sql = f''' select * from catastro.titular 
             where nombre || ' ' ||apellidos ilike '{valor_busqueda[:-1]}' '''
             r = self.driver.read(sql=sql)
@@ -2861,7 +2890,7 @@ class ColegioRiberalta:
         layer_todos_terrenos19.triggerRepaint()
 
 
-        path = r'D:\GeoSIG\Otros\ALEX-CATASTRO\ortofoto_global.ecw'
+        path = self.ortofoto
         rlayer = QgsRasterLayer(path, 'Ortofoto') 
 
         # QgsProject.instance().addMapLayer(rlayer)
@@ -2926,6 +2955,16 @@ class ColegioRiberalta:
 
         layerLineas.loadNamedStyle(self.plugin_dir + r'\estilos\lineas_medidas.qml')
         layerLineas.triggerRepaint()
+
+        uri = QgsDataSourceUri()
+        uri.setConnection(params['host'],params['port'],params['dbname'],params['user'],params['password'])
+        sql = f'''select ejevias.* from catastro.ejevias
+            join catastro.terrenos19  on cast(terrenos19.manzano as numeric) = ejevias.manzana
+            where terrenos19.codigo = '{list_widget_name_ref}' '''
+        uri.setDataSource('',f'({sql})','geom','','id')
+        layerEjevias = QgsVectorLayer(uri.uri(False), feature_terreno["codigo"] + '_EjeVias', "postgres")
+        layerEjevias.loadNamedStyle(self.plugin_dir + r'\estilos\layer_ejevia.qml')
+        layerEjevias.triggerRepaint()
 
         
         uri = QgsDataSourceUri()
@@ -3084,6 +3123,7 @@ class ColegioRiberalta:
         QgsProject.instance().addMapLayer(vertexLayer)
         QgsProject.instance().addMapLayer(layer_terreno)
         QgsProject.instance().addMapLayer(layerLineas)
+        QgsProject.instance().addMapLayer(layerEjevias)
         QgsProject.instance().addMapLayer(layer_todos_terrenos19)
 
  
@@ -3102,7 +3142,7 @@ class ColegioRiberalta:
         # if feature_construccion != []: 
             # mapa1.setLayers([layerConstruccion, vertexLayer, layer, layerLineas])
         # else:
-        mapa1.setLayers([vertexLayer,layer_construcciones,layer_terreno,layer_todos_terrenos19, layerLineas])
+        mapa1.setLayers([vertexLayer,layer_construcciones,layer_terreno,layer_todos_terrenos19, layerLineas,layerEjevias])
         
         rect1 = QgsRectangle(ms1.fullExtent())
         rect1.scale(3.5)
@@ -5368,7 +5408,56 @@ class ColegioRiberalta:
             print(ex)
         
         
- 
+    def ejes_de_vias(self):
+        lyr = self.iface.activeLayer() 
+        features = [f for f in lyr.getSelectedFeatures()]
+        draw = QgsVectorLayer('LineString?crs=epsg:32719','nuevo_eje_via','memory')
+        QgsProject.instance().addMapLayer(draw)
+        draw.startEditing()
+        self.iface.actionAddFeature().trigger()
+        self.iface.setActiveLayer(draw)
+
+        if len(features) == 1:
+            feat = features[0]
+            sql_direccion = f'''  select distinct direccion from catastro.terrenosvista19 t where manzano = '{feat['manzana']}' '''
+            direcciones = [e[0] for e in self.driver.read(sql_direccion, as_dict=False)]
+            direcciones.insert(0,'Selecciona un nombre de Calle')
+            # print(direcciones)
+
+            self.cod_manzano = feat['manzana']
+
+            self.nombres_calles = direcciones
+            
+        else:
+            pass
+        
+        draw.featureAdded.connect(self.finish_eje_via)
+        # self.commit_changes()
+        	
+        
+         
+        
+    
+    def finish_eje_via(self):
+        
+        print('finish')
+        feature = [f for f in self.iface.activeLayer().getFeatures()][0]
+        # geom = feature.geometry().asWkt()
+        self.dlg_ejes_viales.lineEdit.setText(str(self.cod_manzano))
+        self.dlg_ejes_viales.comboBox.addItems(self.nombres_calles)
+        # self.dlg_ejes_viales.geomWkt.emit(geom)
+        self.dlg_ejes_viales.show()
+        # print(feature)
+         
+        # print(geom)
+        # self.commit_changes()
+        
+    
+    def commit_changes(self):
+        self.iface.activeLayer().commitChanges()
+
+
+
 
 
 
