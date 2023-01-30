@@ -289,57 +289,57 @@
    </item>
    <item>
     <property name="text">
-     <string>1</string>
+     <string>A</string>
     </property>
    </item>
    <item>
     <property name="text">
-     <string>2</string>
+     <string>B</string>
     </property>
    </item>
    <item>
     <property name="text">
-     <string>3</string>
+     <string>C</string>
     </property>
    </item>
    <item>
     <property name="text">
-     <string>4</string>
+     <string>D</string>
     </property>
    </item>
    <item>
     <property name="text">
-     <string>5</string>
+     <string>E</string>
     </property>
    </item>
    <item>
     <property name="text">
-     <string>6</string>
+     <string>F</string>
     </property>
    </item>
    <item>
     <property name="text">
-     <string>7</string>
+     <string>G</string>
     </property>
    </item>
    <item>
     <property name="text">
-     <string>8</string>
+     <string>H</string>
     </property>
    </item>
    <item>
     <property name="text">
-     <string>9</string>
+     <string>I</string>
     </property>
    </item>
    <item>
     <property name="text">
-     <string>10</string>
+     <string>J</string>
     </property>
    </item>
    <item>
     <property name="text">
-     <string>11</string>
+     <string>K</string>
     </property>
    </item>
   </widget>

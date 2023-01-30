@@ -30,9 +30,11 @@ from qgis.core import *
 from qgis.utils import iface
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import (
-        QIcon
+        QIcon,
+        QDoubleValidator,
+        QRegExpValidator
     )
-
+from PyQt5.QtCore import QLocale
 from .DriverDataBase import DataBaseDriver
 from .resources import *
 
@@ -191,8 +193,8 @@ class CatastroWidget(QtWidgets.QDockWidget, FORM_CLASS):
                 ) AS segments  '''
 
             sql_ejevias = f'''select ejevias.* from catastro.ejevias
-            join catastro.terrenos19  on cast(terrenos19.manzano as numeric) = ejevias.manzana
-            where terrenos19.codigo = '{codigo}' '''
+            join catastro.terrenos19  on st_intersects(st_buffer(terrenos19.geom,7),ejevias.geom)
+            where terrenos19.codigo = '{codigo}' and st_intersects(st_buffer(terrenos19.geom,7),ejevias.geom) '''
 
             root = QgsProject.instance().layerTreeRoot() 
             group = root.addGroup(f'Terreno: {codigo}')
@@ -299,7 +301,7 @@ class EjesVialesWidget(QtWidgets.QDialog,FORM_EJESVIALES) :
 
 
     def createFeature(self): 
-        
+        lyr = QgsProject.instance().mapLayersByName('nuevo_eje_via')[0]
         manzana = int(self.lineEdit.text())
         nombre = self.comboBox.currentText()
         print(nombre,manzana)
@@ -316,17 +318,163 @@ class EjesVialesWidget(QtWidgets.QDialog,FORM_EJESVIALES) :
                 '''
                 self.driver.create(sql)
 
-                for a in iface.attributesToolBar().actions(): 
-                    if a.objectName() == 'mActionDeselectAll':
-                        a.trigger()
-                        break
+                QgsProject.instance().removeMapLayer(lyr.id())
+
+                # for a in iface.attributesToolBar().actions(): 
+                #     if a.objectName() == 'mActionDeselectAll':
+                #         a.trigger()
+                #         break
+
+                for layer in iface.mapCanvas().layers(): 
+                    if layer.type() == layer.VectorLayer: 
+                        layer.removeSelection()
+
+                
+                iface.mapCanvas().refreshAllLayers()
             else: 
                 self.driver.showMessage('Debe Seleccionar un Nombre de calle',1)
             pass
         except Exception as ex: 
             print('error createFeature',ex)
-    
-    def feature(self,data): 
-        print(data)
 
+
+
+
+
+FORM_ZONAS, _ = uic.loadUiType(os.path.join(
+    os.path.dirname(__file__), 'UI\zonas_dialog_base.ui'))
+
+class ZonasWidget(QtWidgets.QDialog,FORM_ZONAS) : 
+    closingPlugin = pyqtSignal()
+    # geomWkt = pyqtSignal(str)
+
+    def __init__(self, parent=None):
+        """Constructor."""
+        super(ZonasWidget, self).__init__(parent)
+        self.driver = DataBaseDriver()
+        # self.icons = {
+        #     'search' : os.path.join(os.path.dirname(__file__), r'icon\search.svg'),
+        #     'trash' : os.path.join(os.path.dirname(__file__), r'icon\trash-solid.svg')
+        # }
+        self.plugin_dir = os.path.dirname(__file__)
+
+
+       
+        # Set up the user interface from Designer.
+        # After setupUI you can access any designer object by doing
+        # self.<objectname>, and you can use autoconnect slots - see
+        # http://doc.qt.io/qt-5/designer-using-a-ui-file.html
+        # #widgets-and-dialogs-with-auto-connect
+        self.setupUi(self)
+        self.UIComponents()
+
+    def closeEvent(self, event):
+        self.closingPlugin.emit()
+        event.accept()
+
+    def UIComponents(self):
+        self.setWindowTitle('Datos Eje de Via')
+        self.pushButton.clicked.connect(self.createFeature)
+        # regExp = r"^\\d{1,3}(([.]\\d{3})*),(\\d{2})$"
+        
+
+        clases = ['Seleccione una Clase...','A','B','C','D','E','F']
+        categorias = ['Seleccione una Categoria...','1','2','3','4','5','6','7','8','9','10']
+        self.comboBox.addItems(clases)
+        self.comboBox_2.addItems(categorias)
+        # locale = QLocale(QLocale.English,QLocale.Bolivia)
+        # validator = QDoubleValidator()
+        # validator.setDecimals(2)
+        # validator.setLocale(locale)
+        # # validator = QRegExpValidator("^\\d{1,3}(([.]\\d{3})*),(\\d{2})$",self)
+        # self.lineEdit.setValidator(validator)
+
+
+
+
+        # self.geomWkt.connect(self.feature)
+
+
+    def createFeature(self):
+        if self.comboBox.currentIndex() != 0 and self.comboBox_2.currentIndex() != 0:
+            
+            clase = str(self.comboBox.currentText())
+            categoria = str(self.comboBox_2.currentText())
+            valor_comercial = float(self.doubleSpinBox.value())
+            valor_catastral = float(self.doubleSpinBox_2.value())
+            # print(clase,categoria,valor_comercial,valor_catastral)
+            features =  iface.activeLayer().selectedFeatures()
+    
+            try:
+                lyr = iface.activeLayer()
+                if len(features) == 0: 
+                    self.driver.showMessage('Debe seleccionar una Zona',1,3)
+                elif len(features) > 1:
+                    self.driver.showMessage('Debe seleccionar solo Una Zona',1,3)
+                else: 
+                    feature = features[0]
+                    geom = feature.geometry().asWkt()
+                    srid = iface.activeLayer().crs().authid()[5:]
+
+                    sql = f''' INSERT INTO catastro.zonificacion
+                    (clase, subclase, valor_comercial, valor_catastral, geom)
+                    VALUES('{clase}', {categoria}, {valor_comercial}, {valor_catastral}, st_transform(st_geomfromtext('{geom}',{srid}),32719));
+                    '''
+                    self.driver.create(sql)
+
+                    # QgsProject.instance().removeMapLayer(lyr.id())
+
+                    # for a in iface.attributesToolBar().actions(): 
+                    #     if a.objectName() == 'mActionDeselectAll':
+                    #         a.trigger()
+                    #         break
+
+                    for layer in iface.mapCanvas().layers(): 
+                        if layer.type() == layer.VectorLayer: 
+                            layer.removeSelection()
+
+                    
+                    iface.mapCanvas().refreshAllLayers()
+
+            except Exception as ex: 
+                print('error createFeature',ex)
+
+            except TypeError as ex:
+                print(ex)
+            
+                
+            
+        else: 
+            self.driver.showMessage('Seleccione un Tipo y un Sub-Tipo',1,3)
+        
+        # try:
+        #     if self.comboBox.currentIndex() != 0:
+        #         feature = [f for f in iface.activeLayer().getFeatures()][0]
+        #         geom = feature.geometry().asWkt()
+        #         srid = iface.activeLayer().crs().authid()[5:]
+
+
+        #         sql = f''' INSERT INTO catastro.ejevias(manzana, nombre, geom)
+        #         VALUES({manzana}, '{nombre}', st_transform(st_geomfromtext('{geom}',{srid}),32719));
+        #         '''
+        #         self.driver.create(sql)
+
+        #         QgsProject.instance().removeMapLayer(lyr.id())
+
+        #         # for a in iface.attributesToolBar().actions(): 
+        #         #     if a.objectName() == 'mActionDeselectAll':
+        #         #         a.trigger()
+        #         #         break
+
+        #         for layer in iface.mapCanvas().layers(): 
+        #             if layer.type() == layer.VectorLayer: 
+        #                 layer.removeSelection()
+
+                
+        #         iface.mapCanvas().refreshAllLayers()
+        #     else: 
+        #         self.driver.showMessage('Debe Seleccionar un Nombre de calle',1)
+        #     pass
+        # except Exception as ex: 
+        #     print('error createFeature',ex)
 

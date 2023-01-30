@@ -109,7 +109,7 @@ from .colegio_riberalta_dialog import InfoCodigoDivide1
 from .colegio_riberalta_dialog import InfoCodigoDivide2
 
 from .DriverDataBase import DataBaseDriver
-from .catastro import CatastroWidget,EjesVialesWidget
+from .catastro import CatastroWidget,EjesVialesWidget,ZonasWidget
 from .resources import *
 
 
@@ -289,8 +289,16 @@ class ColegioRiberalta:
         icon_path = self.plugin_dir + "/icon/road.png"
         self.add_action(icon_path,
             text= 'Eje de Vias',
-            callback=self.ejes_de_vias,
+            callback=self.abrir_dialog_guardar_ejevias,
             parent=self.iface.mainWindow())
+        
+        icon_path = self.plugin_dir + "/icon/zona.png"
+        self.add_action(icon_path,
+            text= 'Zonificacion',
+            callback=self.abrir_dialogo_guardar_zonas,
+            parent=self.iface.mainWindow())
+
+        
         
         ######################################################################VARIABLES CARGADAS DE DIALOG##########################################
         
@@ -317,6 +325,10 @@ class ColegioRiberalta:
         self.dlg_huso_layout = SeleccionarHusoLayout()
         self.dlg_huso_informe = SeleccionarHusoInforme()
         self.dlg_guardar_feature = GuardarFeature()
+
+        self.dlg_guardar_ejevia = GuardarFeature() #! MANZANO
+        self.dlg_guardar_zona = ZonasWidget()
+
         self.dlg_export_feature = ExportDatabaseFeature()
         self.dlg_huso_feature = SeleccionarHusoFeature()
         self.dlg_guardar_feature_construccion = GuardarFeatureConstruccion()
@@ -408,6 +420,9 @@ class ColegioRiberalta:
         self.dlg_informe.setWindowTitle("Selecciona una Parcela y Genera un Informe")
         self.dlg_huso.setWindowTitle("Selecciona Huso Horario")
         self.dlg_guardar_feature.setWindowTitle("Selecciona un Polígono")
+
+        self.dlg_guardar_ejevia.setWindowTitle('Seleccione un Manzano')
+        self.dlg_guardar_ejevia.label.setText('Selecciona un Manzano a Continuación haz click en Guardar Seleccion o Cancelar ')
         
         self.dlg_huso.setWindowTitle("Selecciona un Huso Horario")
         self.dlg_huso_feature.setWindowTitle("Selecciona un Huso Horario")
@@ -578,6 +593,13 @@ class ColegioRiberalta:
         self.dlg_guardar_feature.btn_guardar.clicked.connect(self.abrir_dialogo_listar_titular_feature)
         self.dlg_guardar_feature.btn_guardar.clicked.connect(self.cargar_titular_feature)
         self.dlg_guardar_feature.btn_guardar.clicked.connect(self.cerrar_dialogo_guardarfeature)
+
+
+        self.dlg_guardar_ejevia.btn_guardar.clicked.connect(self.ejes_de_vias) #! OJO AQUI
+        self.dlg_guardar_ejevia.btn_guardar.clicked.connect(self.cerrar_dialog_guardar_ejevias) #! OJO AQUI
+
+        self.dlg_guardar_ejevia.btn_cancelar.clicked.connect(self.cerrar_dialog_guardar_ejevias)
+        self.dlg_guardar_ejevia.btn_cancelar.clicked.connect(self.desactiva_seleccion)
         
         self.dlg_guardar_feature.btn_cancelar.clicked.connect(self.cerrar_dialogo_guardarfeature)
         self.dlg_guardar_feature.btn_cancelar.clicked.connect(self.desactiva_seleccion)
@@ -1130,6 +1152,18 @@ class ColegioRiberalta:
 
     def cerrar_dialogo_guardarfeature(self):
         self.dlg_guardar_feature.close()
+
+    def abrir_dialog_guardar_ejevias(self): 
+        self.dlg_guardar_ejevia.show()
+    
+    def cerrar_dialog_guardar_ejevias(self): 
+        self.dlg_guardar_manzano.close()
+    
+    def abrir_dialogo_guardar_zonas(self):
+        self.dlg_guardar_zona.show()
+
+    def cerrar_dialog_guardar_zonas(self): 
+        self.dlg_guardar_zona.close()
         
        
         
@@ -2959,8 +2993,8 @@ class ColegioRiberalta:
         uri = QgsDataSourceUri()
         uri.setConnection(params['host'],params['port'],params['dbname'],params['user'],params['password'])
         sql = f'''select ejevias.* from catastro.ejevias
-            join catastro.terrenos19  on cast(terrenos19.manzano as numeric) = ejevias.manzana
-            where terrenos19.codigo = '{list_widget_name_ref}' '''
+            join catastro.terrenos19  on st_intersects(st_buffer(terrenos19.geom,7),ejevias.geom)
+            where terrenos19.codigo = '{list_widget_name_ref}' and st_intersects(st_buffer(terrenos19.geom,7),ejevias.geom) '''
         uri.setDataSource('',f'({sql})','geom','','id')
         layerEjevias = QgsVectorLayer(uri.uri(False), feature_terreno["codigo"] + '_EjeVias', "postgres")
         layerEjevias.loadNamedStyle(self.plugin_dir + r'\estilos\layer_ejevia.qml')
@@ -3145,7 +3179,7 @@ class ColegioRiberalta:
         mapa1.setLayers([vertexLayer,layer_construcciones,layer_terreno,layer_todos_terrenos19, layerLineas,layerEjevias])
         
         rect1 = QgsRectangle(ms1.fullExtent())
-        rect1.scale(3.5)
+        rect1.scale(5)
         ms1.setExtent(rect1)
         mapa1.setExtent(rect1)
         # mapa1.setScale(2000)
@@ -3161,7 +3195,7 @@ class ColegioRiberalta:
         mapa2.setLayers([layerLineasUbicacion,rlayer])
         
         rect2 = QgsRectangle(ms2.fullExtent())
-        rect2.scale(2.8)
+        rect2.scale(8)
         ms2.setExtent(rect2)
         mapa2.setExtent(rect2)
         
@@ -3173,15 +3207,6 @@ class ColegioRiberalta:
         exporter = QgsLayoutExporter(layout)    
         exporter.exportToPdf(self.plugin_dir + "/Layout.pdf", QgsLayoutExporter.PdfExportSettings()) 
 
-        
-        
-        
-        
-        # QgsProject.instance().removeMapLayer(layerLineasUbicacion)        
-        # QgsProject.instance().removeMapLayer(vertexLayer)
-        # QgsProject.instance().removeMapLayer(layer_terreno)
-        # QgsProject.instance().removeMapLayer(layerLineas)
-        # QgsProject.instance().removeMapLayer(layer_todos_terrenos19)
 
         iface.mapCanvas().setExtent(layer_terreno.extent())
      
@@ -4756,12 +4781,6 @@ class ColegioRiberalta:
   
 
               
-        # # for item in r:      
-        # #     if valor_busqueda == str(item["documento"]):
-        # #         lista.append(str(item["id"]) + "    " + str(item["nombre"]) + " " + str(item["apellidos"]) + " " + str(item["documento"]))
-
-        # list_widget.addItem(item)
-        
         
        
     def titular_titular_cambiar_busca_nombre(self):
@@ -5440,7 +5459,7 @@ class ColegioRiberalta:
     
     def finish_eje_via(self):
         
-        print('finish')
+        self.dlg_ejes_viales.comboBox.clear()
         feature = [f for f in self.iface.activeLayer().getFeatures()][0]
         # geom = feature.geometry().asWkt()
         self.dlg_ejes_viales.lineEdit.setText(str(self.cod_manzano))
@@ -5451,6 +5470,10 @@ class ColegioRiberalta:
          
         # print(geom)
         # self.commit_changes()
+
+
+    def crear_zonas(self):
+        self.dlg_guardar_zona.show()
         
     
     def commit_changes(self):
