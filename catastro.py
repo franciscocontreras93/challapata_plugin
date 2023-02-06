@@ -31,6 +31,7 @@ from qgis.utils import iface
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import (
         QIcon,
+        QIntValidator,
         QDoubleValidator,
         QRegExpValidator
     )
@@ -338,6 +339,97 @@ class EjesVialesWidget(QtWidgets.QDialog,FORM_EJESVIALES) :
             print('error createFeature',ex)
 
 
+class ManzanasDialog(QtWidgets.QDialog):
+    closingPlugin = pyqtSignal()
+    def __init__(self):
+        super().__init__()
+        self.driver = DataBaseDriver()
+        self.UIComponents()
+        pass
+
+    def closeEvent(self,event): 
+        self.closingPlugin.emit()
+        self.numManzano.clear()
+        self.statusCombo.setCurrentIndex(0)
+        event.accept()
+
+    
+    def UIComponents(self):
+        self.setWindowTitle('Cargar Manzanos a la Base de Datos')
+
+        labelManzano = QLabel('Ingrese el Numero de Manzano') 
+        layout = QGridLayout()
+
+        self.numManzano = QLineEdit()
+        self.numManzano.setValidator(QIntValidator())
+        layout.addWidget(labelManzano,0,0)
+        layout.addWidget(self.numManzano,0,1)
+
+        labelStatus = QLabel('Status de la Manzana')
+        self.statusCombo = QComboBox()
+        self.statusCombo.addItems(['Seleccione un Status...','Y','N'])
+        layout.addWidget(labelStatus,1,0)
+        layout.addWidget(self.statusCombo,1,1)
+
+        guardarButton = QPushButton('Guardar')
+        layout.addWidget(guardarButton,2,0,2,2)
+        guardarButton.clicked.connect(self.createFeature)
+
+        self.setLayout(layout)
+
+    def createFeature(self): 
+        if self.statusCombo.currentIndex() != 0 and self.numManzano.text() != '' :
+            numManzano = int(self.numManzano.text())
+            status = str(self.statusCombo.currentText())
+
+            try:
+                features =  iface.activeLayer().selectedFeatures()
+            except AttributeError: 
+                self.driver.showMessage('Debe seleccionar un manzano',1,3)
+    
+            try:
+                lyr = iface.activeLayer()
+                if len(features) == 0: 
+                    self.driver.showMessage('Debe seleccionar un Manzano',1,3)
+                elif len(features) > 1:
+                    self.driver.showMessage('Debe seleccionar solo un Manzano',1,3)
+                else: 
+                    feature = features[0]
+                    geom = feature.geometry().asWkt()
+                    srid = iface.activeLayer().crs().authid()[5:]
+
+                    sql = f''' INSERT INTO catastro.manzanos
+                    (manzana, status, geom)
+                    VALUES({numManzano}, '{status}', st_transform(st_geomfromtext('{geom}',{srid}),32719));
+                    '''
+                    self.driver.create(sql)
+
+                    # QgsProject.instance().removeMapLayer(lyr.id())
+
+                    # for a in iface.attributesToolBar().actions(): 
+                    #     if a.objectName() == 'mActionDeselectAll':
+                    #         a.trigger()
+                    #         break
+
+                    for layer in iface.mapCanvas().layers(): 
+                        if layer.type() == layer.VectorLayer: 
+                            layer.removeSelection()
+
+                    
+                    iface.mapCanvas().refreshAllLayers()
+
+            except Exception as ex: 
+                print('error createFeature',ex)
+
+            except TypeError as ex:
+                print(ex)
+            
+                
+            
+        else: 
+            self.driver.showMessage('Seleccione un Status',1,3)
+
+
 
 
 
@@ -346,7 +438,6 @@ FORM_ZONAS, _ = uic.loadUiType(os.path.join(
 
 class ZonasWidget(QtWidgets.QDialog,FORM_ZONAS) : 
     closingPlugin = pyqtSignal()
-    # geomWkt = pyqtSignal(str)
 
     def __init__(self, parent=None):
         """Constructor."""
@@ -382,17 +473,7 @@ class ZonasWidget(QtWidgets.QDialog,FORM_ZONAS) :
         categorias = ['Seleccione una Categoria...','1','2','3','4','5','6','7','8','9','10']
         self.comboBox.addItems(clases)
         self.comboBox_2.addItems(categorias)
-        # locale = QLocale(QLocale.English,QLocale.Bolivia)
-        # validator = QDoubleValidator()
-        # validator.setDecimals(2)
-        # validator.setLocale(locale)
-        # # validator = QRegExpValidator("^\\d{1,3}(([.]\\d{3})*),(\\d{2})$",self)
-        # self.lineEdit.setValidator(validator)
 
-
-
-
-        # self.geomWkt.connect(self.feature)
 
 
     def createFeature(self):

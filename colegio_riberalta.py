@@ -109,7 +109,7 @@ from .colegio_riberalta_dialog import InfoCodigoDivide1
 from .colegio_riberalta_dialog import InfoCodigoDivide2
 
 from .DriverDataBase import DataBaseDriver
-from .catastro import CatastroWidget,EjesVialesWidget,ZonasWidget
+from .catastro import CatastroWidget,EjesVialesWidget,ZonasWidget,ManzanasDialog
 from .resources import *
 
 
@@ -286,6 +286,12 @@ class ColegioRiberalta:
             callback=self.abrir_guardar_feature_divide,
             parent=self.iface.mainWindow())
 
+        icon_path = self.plugin_dir + "/icon/manzana.png"
+        self.add_action(icon_path,
+            text= 'Manzanos',
+            callback=self.abrir_dialogo_guardarManzanas,
+            parent=self.iface.mainWindow())
+
         icon_path = self.plugin_dir + "/icon/road.png"
         self.add_action(icon_path,
             text= 'Eje de Vias',
@@ -297,6 +303,8 @@ class ColegioRiberalta:
             text= 'Zonificacion',
             callback=self.abrir_dialogo_guardar_zonas,
             parent=self.iface.mainWindow())
+
+        
 
         
         
@@ -326,8 +334,9 @@ class ColegioRiberalta:
         self.dlg_huso_informe = SeleccionarHusoInforme()
         self.dlg_guardar_feature = GuardarFeature()
 
-        self.dlg_guardar_ejevia = GuardarFeature() #! MANZANO
-        self.dlg_guardar_zona = ZonasWidget()
+        self.dlg_guardar_ejevia = GuardarFeature() #! EjeVias
+        self.dlg_guardar_manzanas = ManzanasDialog() #! Manzanos
+        self.dlg_guardar_zona = ZonasWidget() #! Zonas
 
         self.dlg_export_feature = ExportDatabaseFeature()
         self.dlg_huso_feature = SeleccionarHusoFeature()
@@ -1153,11 +1162,16 @@ class ColegioRiberalta:
     def cerrar_dialogo_guardarfeature(self):
         self.dlg_guardar_feature.close()
 
+    def abrir_dialogo_guardarManzanas(self): 
+        self.dlg_guardar_manzanas.show() 
+
+
+
     def abrir_dialog_guardar_ejevias(self): 
         self.dlg_guardar_ejevia.show()
     
     def cerrar_dialog_guardar_ejevias(self): 
-        self.dlg_guardar_manzano.close()
+        self.dlg_guardar_ejevia.close()
     
     def abrir_dialogo_guardar_zonas(self):
         self.dlg_guardar_zona.show()
