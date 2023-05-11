@@ -13,857 +13,835 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QPushButton" name="btn_exportdb">
+  <widget class="QWidget" name="gridLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>830</x>
-     <y>600</y>
-     <width>111</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">background-color: rgb(0, 170, 255)</string>
-   </property>
-   <property name="text">
-    <string>Exportar a BBDD</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_5">
-   <property name="geometry">
-    <rect>
-     <x>110</x>
+     <x>540</x>
      <y>30</y>
-     <width>251</width>
-     <height>16</height>
+     <width>391</width>
+     <height>601</height>
     </rect>
    </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="text">
-    <string>INFORMACIÓN CATASTRAL</string>
-   </property>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="8" column="0">
+     <widget class="QLabel" name="label_25">
+      <property name="font">
+       <font>
+        <pointsize>9</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Indica la Ubicación</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="0">
+     <widget class="QLabel" name="label_21">
+      <property name="font">
+       <font>
+        <pointsize>9</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Puntos Base</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QLineEdit" name="txt_ntest">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>30</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QDateEdit" name="date_test">
+      <property name="calendarPopup">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="label_2">
+      <property name="text">
+       <string>Fecha Testimonio</string>
+      </property>
+     </widget>
+    </item>
+    <item row="10" column="0">
+     <widget class="QLabel" name="label_27">
+      <property name="font">
+       <font>
+        <pointsize>9</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Material de la Calzada</string>
+      </property>
+     </widget>
+    </item>
+    <item row="9" column="1">
+     <widget class="QComboBox" name="comboBox_tipocalzada">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>30</height>
+       </size>
+      </property>
+      <item>
+       <property name="text">
+        <string/>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Avenida Principal</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Avenida Secundaria</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Calle Principal</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Calle Secundaria</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Calle Terciaria o Callejón</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Calle Con Ripio</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Calle de Tierra Natural</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLabel" name="label_3">
+      <property name="text">
+       <string>Folio DD.RR</string>
+      </property>
+     </widget>
+    </item>
+    <item row="11" column="1">
+     <widget class="QComboBox" name="comboBox_forma">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>30</height>
+       </size>
+      </property>
+      <item>
+       <property name="text">
+        <string/>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Regular</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Irregular</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Muy Irregular</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="5" column="0" colspan="2">
+     <widget class="QLabel" name="label_22">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>35</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>INFORMACIÓN DE VALORACIÓN</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0" colspan="2">
+     <widget class="QLabel" name="label_26">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>35</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>TOPOGRAFÍA</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>N° Testimonio</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="1">
+     <widget class="QLineEdit" name="txt_base">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>30</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1">
+     <widget class="QLineEdit" name="txt_folioddrr"/>
+    </item>
+    <item row="8" column="1">
+     <widget class="QComboBox" name="comboBox_ubicacion">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>30</height>
+       </size>
+      </property>
+      <item>
+       <property name="text">
+        <string/>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Esquina</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Medio</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Pasaje Interior</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>No Definido</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="7" column="1">
+     <widget class="QComboBox" name="comboBox_inclinacion">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>30</height>
+       </size>
+      </property>
+      <item>
+       <property name="text">
+        <string/>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>0 a 10 Grados</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>10 a 15 Grados</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Superior a 15 Grados</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="6" column="0">
+     <widget class="QLabel" name="label_23">
+      <property name="font">
+       <font>
+        <pointsize>9</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Elige la Zona</string>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="1">
+     <widget class="QComboBox" name="comboBox_zona">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>30</height>
+       </size>
+      </property>
+      <item>
+       <property name="text">
+        <string/>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>A</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>B</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>C</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>D</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>E</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>F</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>G</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>H</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>I</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>J</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>K</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="10" column="1">
+     <widget class="QComboBox" name="comboBox_calzada">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>30</height>
+       </size>
+      </property>
+      <item>
+       <property name="text">
+        <string/>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Asfalto</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Adoquín</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Cemento</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Loseta</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Piedra</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Ripio</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Tierra</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Otros</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="11" column="0">
+     <widget class="QLabel" name="label_28">
+      <property name="font">
+       <font>
+        <pointsize>9</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Forma del Terreno</string>
+      </property>
+     </widget>
+    </item>
+    <item row="9" column="0">
+     <widget class="QLabel" name="label_31">
+      <property name="font">
+       <font>
+        <pointsize>9</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Tipo de Calzada</string>
+      </property>
+     </widget>
+    </item>
+    <item row="7" column="0">
+     <widget class="QLabel" name="label_24">
+      <property name="font">
+       <font>
+        <pointsize>9</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Indica la Inclinación</string>
+      </property>
+     </widget>
+    </item>
+    <item row="12" column="1">
+     <widget class="QPushButton" name="btn_exportdb">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(0, 170, 255)</string>
+      </property>
+      <property name="text">
+       <string>Exportar a BBDD</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
-  <widget class="QLabel" name="label_7">
+  <widget class="QWidget" name="gridLayoutWidget_2">
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>170</y>
-     <width>81</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>9</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>Manzano</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_8">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>210</y>
-     <width>51</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>9</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>Predio</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_9">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>250</y>
-     <width>81</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>9</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>SubPredio</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_10">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>130</y>
-     <width>111</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>9</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>Calle / Avenida</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_11">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>290</y>
-     <width>91</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>9</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>Zona / Barrio</string>
-   </property>
-  </widget>
-  <widget class="QPlainTextEdit" name="txt_manzano">
-   <property name="geometry">
-    <rect>
-     <x>170</x>
-     <y>160</y>
-     <width>281</width>
-     <height>31</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QPlainTextEdit" name="txt_predio">
-   <property name="geometry">
-    <rect>
-     <x>170</x>
-     <y>200</y>
-     <width>281</width>
-     <height>31</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QPlainTextEdit" name="txt_sub">
-   <property name="geometry">
-    <rect>
-     <x>170</x>
-     <y>240</y>
-     <width>281</width>
-     <height>31</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QPlainTextEdit" name="txt_calle">
-   <property name="geometry">
-    <rect>
-     <x>170</x>
-     <y>120</y>
-     <width>281</width>
-     <height>31</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QPlainTextEdit" name="txt_zona">
-   <property name="geometry">
-    <rect>
-     <x>170</x>
-     <y>280</y>
-     <width>281</width>
-     <height>31</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QPlainTextEdit" name="txt_suptest">
-   <property name="geometry">
-    <rect>
-     <x>180</x>
-     <y>370</y>
-     <width>261</width>
-     <height>31</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_19">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>380</y>
-     <width>131</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>9</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>Sup. Testimonio</string>
-   </property>
-  </widget>
-  <widget class="QPlainTextEdit" name="txt_referencia">
-   <property name="geometry">
-    <rect>
-     <x>190</x>
-     <y>80</y>
-     <width>261</width>
-     <height>31</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_20">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>80</y>
-     <width>131</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>9</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>Código Catastral</string>
-   </property>
-  </widget>
-  <widget class="QPlainTextEdit" name="txt_base">
-   <property name="geometry">
-    <rect>
-     <x>660</x>
-     <y>80</y>
-     <width>201</width>
-     <height>31</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_21">
-   <property name="geometry">
-    <rect>
-     <x>510</x>
-     <y>80</y>
-     <width>121</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>9</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>Puntos Base</string>
-   </property>
-  </widget>
-  <widget class="QComboBox" name="comboBox_zona">
-   <property name="geometry">
-    <rect>
-     <x>670</x>
-     <y>190</y>
-     <width>211</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <item>
-    <property name="text">
-     <string/>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>A</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>B</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>C</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>D</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>E</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>F</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>G</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>H</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>I</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>J</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>K</string>
-    </property>
-   </item>
-  </widget>
-  <widget class="QLabel" name="label_22">
-   <property name="geometry">
-    <rect>
-     <x>560</x>
-     <y>150</y>
-     <width>291</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="text">
-    <string>INFORMACIÓN DE VALORACIÓN</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_23">
-   <property name="geometry">
-    <rect>
-     <x>500</x>
-     <y>180</y>
-     <width>121</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>9</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>Elige la Zona</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_24">
-   <property name="geometry">
-    <rect>
-     <x>500</x>
-     <y>230</y>
-     <width>161</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>9</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>Indica la Inclinación</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_25">
-   <property name="geometry">
-    <rect>
-     <x>500</x>
-     <y>280</y>
-     <width>121</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>9</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>Indica la Ubicación</string>
-   </property>
-  </widget>
-  <widget class="QComboBox" name="comboBox_inclinacion">
-   <property name="geometry">
-    <rect>
-     <x>670</x>
-     <y>240</y>
-     <width>211</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <item>
-    <property name="text">
-     <string/>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>0 a 10 Grados</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>10 a 15 Grados</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Superior a 15 Grados</string>
-    </property>
-   </item>
-  </widget>
-  <widget class="QComboBox" name="comboBox_ubicacion">
-   <property name="geometry">
-    <rect>
-     <x>670</x>
-     <y>290</y>
-     <width>211</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <item>
-    <property name="text">
-     <string/>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Esquina</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Medio</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Pasaje Interior</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>No Definido</string>
-    </property>
-   </item>
-  </widget>
-  <widget class="QCheckBox" name="checkBox_agua">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>540</y>
-     <width>141</width>
-     <height>17</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Agua Potable</string>
-   </property>
-  </widget>
-  <widget class="QCheckBox" name="checkBox_alcantarilla">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>570</y>
-     <width>151</width>
-     <height>17</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Alcantarillado</string>
-   </property>
-  </widget>
-  <widget class="QCheckBox" name="checkBox_energia">
-   <property name="geometry">
-    <rect>
-     <x>370</x>
-     <y>540</y>
-     <width>141</width>
-     <height>17</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Energía Eléctrica</string>
-   </property>
-  </widget>
-  <widget class="QCheckBox" name="checkBox_telefono">
-   <property name="geometry">
-    <rect>
-     <x>210</x>
-     <y>540</y>
-     <width>101</width>
-     <height>17</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Teléfono</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_26">
-   <property name="geometry">
-    <rect>
-     <x>620</x>
      <y>30</y>
-     <width>211</width>
-     <height>16</height>
+     <width>481</width>
+     <height>591</height>
     </rect>
    </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="text">
-    <string>TOPOGRAFÍA</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_27">
-   <property name="geometry">
-    <rect>
-     <x>500</x>
-     <y>380</y>
-     <width>161</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>9</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>Material de la Calzada</string>
-   </property>
-  </widget>
-  <widget class="QComboBox" name="comboBox_calzada">
-   <property name="geometry">
-    <rect>
-     <x>670</x>
-     <y>390</y>
-     <width>211</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <item>
-    <property name="text">
-     <string/>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Asfalto</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Adoquín</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Cemento</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Loseta</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Piedra</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Ripio</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Tierra</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Otros</string>
-    </property>
-   </item>
-  </widget>
-  <widget class="QComboBox" name="comboBox_forma">
-   <property name="geometry">
-    <rect>
-     <x>670</x>
-     <y>440</y>
-     <width>211</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <item>
-    <property name="text">
-     <string/>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Regular</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Irregular</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Muy Irregular</string>
-    </property>
-   </item>
-  </widget>
-  <widget class="QLabel" name="label_28">
-   <property name="geometry">
-    <rect>
-     <x>500</x>
-     <y>430</y>
-     <width>121</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>9</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>Forma del Terreno</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_29">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>420</y>
-     <width>121</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>9</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>Distancia Frente</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_30">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>460</y>
-     <width>121</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>9</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>Distancia Fondo</string>
-   </property>
-  </widget>
-  <widget class="QPlainTextEdit" name="txt_frente">
-   <property name="geometry">
-    <rect>
-     <x>180</x>
-     <y>410</y>
-     <width>261</width>
-     <height>31</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QPlainTextEdit" name="txt_fondo">
-   <property name="geometry">
-    <rect>
-     <x>180</x>
-     <y>450</y>
-     <width>261</width>
-     <height>31</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_6">
-   <property name="geometry">
-    <rect>
-     <x>120</x>
-     <y>340</y>
-     <width>251</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="text">
-    <string>INFORMACIÓN GEOMÉTRICA</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_17">
-   <property name="geometry">
-    <rect>
-     <x>120</x>
-     <y>510</y>
-     <width>301</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="text">
-    <string>ACCESO A SERVICIOS PÚBLICOS</string>
-   </property>
-  </widget>
-  <widget class="QCheckBox" name="checkBox_internet">
-   <property name="geometry">
-    <rect>
-     <x>210</x>
-     <y>570</y>
-     <width>111</width>
-     <height>17</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Internet</string>
-   </property>
-  </widget>
-  <widget class="QCheckBox" name="checkBox_transporte">
-   <property name="geometry">
-    <rect>
-     <x>370</x>
-     <y>570</y>
-     <width>131</width>
-     <height>17</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Transporte Público</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_31">
-   <property name="geometry">
-    <rect>
-     <x>500</x>
-     <y>330</y>
-     <width>121</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>9</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>Tipo de Calzada</string>
-   </property>
-  </widget>
-  <widget class="QComboBox" name="comboBox_tipocalzada">
-   <property name="geometry">
-    <rect>
-     <x>670</x>
-     <y>340</y>
-     <width>211</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <item>
-    <property name="text">
-     <string/>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Avenida Principal</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Avenida Secundaria</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Calle Principal</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Calle Secundaria</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Calle Terciaria o Callejón</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Calle Con Ripio</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Calle de Tierra Natural</string>
-    </property>
-   </item>
+   <layout class="QGridLayout" name="gridLayout_3">
+    <item row="12" column="0">
+     <widget class="QCheckBox" name="checkBox_agua">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Agua Potable</string>
+      </property>
+     </widget>
+    </item>
+    <item row="9" column="0">
+     <widget class="QLabel" name="label_29">
+      <property name="font">
+       <font>
+        <pointsize>9</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Distancia Frente</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="0">
+     <widget class="QLabel" name="label_9">
+      <property name="font">
+       <font>
+        <pointsize>9</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>SubPredio</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLabel" name="label_7">
+      <property name="font">
+       <font>
+        <pointsize>9</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Manzano</string>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="0">
+     <widget class="QLabel" name="label_11">
+      <property name="font">
+       <font>
+        <pointsize>9</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Zona / Barrio</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLabel" name="label_10">
+      <property name="font">
+       <font>
+        <pointsize>9</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Calle / Avenida</string>
+      </property>
+     </widget>
+    </item>
+    <item row="8" column="0">
+     <widget class="QLabel" name="label_19">
+      <property name="font">
+       <font>
+        <pointsize>9</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Sup. Testimonio</string>
+      </property>
+     </widget>
+    </item>
+    <item row="10" column="0">
+     <widget class="QLabel" name="label_30">
+      <property name="font">
+       <font>
+        <pointsize>9</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Distancia Fondo</string>
+      </property>
+     </widget>
+    </item>
+    <item row="12" column="1">
+     <widget class="QCheckBox" name="checkBox_telefono">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Teléfono</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="0">
+     <widget class="QLabel" name="label_8">
+      <property name="font">
+       <font>
+        <pointsize>9</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Predio</string>
+      </property>
+     </widget>
+    </item>
+    <item row="13" column="1">
+     <widget class="QCheckBox" name="checkBox_internet">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Internet</string>
+      </property>
+     </widget>
+    </item>
+    <item row="13" column="0">
+     <widget class="QCheckBox" name="checkBox_alcantarilla">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Alcantarillado</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="label_20">
+      <property name="font">
+       <font>
+        <pointsize>9</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Código Catastral</string>
+      </property>
+     </widget>
+    </item>
+    <item row="12" column="2">
+     <widget class="QCheckBox" name="checkBox_energia">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Energía Eléctrica</string>
+      </property>
+     </widget>
+    </item>
+    <item row="13" column="2">
+     <widget class="QCheckBox" name="checkBox_transporte">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Transporte Público</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1" colspan="2">
+     <widget class="QLineEdit" name="txt_referencia">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>30</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1" colspan="2">
+     <widget class="QLineEdit" name="txt_calle">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>30</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="1" colspan="2">
+     <widget class="QLineEdit" name="txt_manzano">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>30</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="1" colspan="2">
+     <widget class="QLineEdit" name="txt_predio">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>30</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="1" colspan="2">
+     <widget class="QLineEdit" name="txt_sub">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>30</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="1" colspan="2">
+     <widget class="QLineEdit" name="txt_zona">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>30</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item row="7" column="0" colspan="3">
+     <widget class="QLabel" name="label_6">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>35</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>INFORMACIÓN GEOMÉTRICA</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="8" column="1" colspan="2">
+     <widget class="QLineEdit" name="txt_suptest">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>30</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item row="9" column="1" colspan="2">
+     <widget class="QLineEdit" name="txt_frente">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>30</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item row="10" column="1" colspan="2">
+     <widget class="QLineEdit" name="txt_fondo">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>30</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item row="11" column="0" colspan="3">
+     <widget class="QLabel" name="label_17">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>35</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>ACCESO A SERVICIOS PÚBLICOS</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0" colspan="3">
+     <widget class="QLabel" name="label_5">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>35</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>INFORMACIÓN CATASTRAL</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
  </widget>
  <resources/>

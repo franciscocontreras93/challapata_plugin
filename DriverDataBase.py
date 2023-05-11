@@ -30,8 +30,8 @@ class DataBaseDriver():
     AS_DICT = psycopg2.extras.RealDictCursor
     def __init__(self) -> None:
         #! CONFIGURAR LAS VARIABLES DE ENTORNO DENTRO DE LA PC DEL CLIENTE
-        os.environ['DBCATASTRO_DBNAME'] = 'bdcatastro'
-        os.environ['DBCATASTRO_HOST'] = 'localhost'
+        os.environ['DBCATASTRO_DBNAME'] = 'catastrodb'
+        os.environ['DBCATASTRO_HOST'] = '192.168.1.105'
         os.environ['DBCATASTRO_USER'] = 'postgres'
         os.environ['DBCATASTRO_PASSWORD'] = '23826405'
         os.environ['DBCATASTRO_PORT'] = '5432'
@@ -78,7 +78,7 @@ class DataBaseDriver():
         pass
 
 
-    def create(self,sql):
+    def create(self,sql,msg=True):
         """Function for Input queries
 
         Args:
@@ -90,7 +90,8 @@ class DataBaseDriver():
                 cur = conn.cursor()
                 cur.execute(sql) 
                 conn.commit()
-                self.showMessage("Información Guardada en la Base de Datos Correctamente",3,3)
+                if msg:
+                    self.showMessage("Información Guardada en la Base de Datos Correctamente",3,3)
 
 
             
@@ -131,7 +132,7 @@ class DataBaseDriver():
                 # return json.dumps(r).encode('latin1')
                 return r
             except Exception as ex: 
-                print(ex) 
+                print('DriverError',ex) 
         pass
     def update(self,sql):
         """Function for Update queries

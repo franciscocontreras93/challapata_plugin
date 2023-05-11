@@ -1,6 +1,0 @@
-{"id": 1, "adquisicion": "Compra", "codigo": "COM"}, 
-{"id": 2, "adquisicion": "Herencia", "codigo": "HER"}, 
-{"id": 3, "adquisicion": "Expropiaci\u00f3n", "codigo": "EXP"}, 
-{"id": 4, "adquisicion": "Usucapi\u00f3n", "codigo": "USU"}, 
-{"id": 5, "adquisicion": "Resoluci\u00f3n Judicial", "codigo": "RES"}, 
-{"id": 0, "adquisicion": "Sin Datos", "codigo": ""}

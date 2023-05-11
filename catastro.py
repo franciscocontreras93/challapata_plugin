@@ -119,7 +119,7 @@ class CatastroWidget(QtWidgets.QDockWidget, FORM_CLASS):
                 apellidos || ' ' || nombre as nombres, 
                 direccion  from catastro.terrenosvista19
                 where codigo = '{param[1:-1]}'
-                or documento = '{param[1:-1]}'
+                or documento::text = '{param[1:-1]}'
                 or nombre || ' ' || apellidos ilike '{param}'
                 order by apellidos || ' ' || nombre '''
         
@@ -163,12 +163,13 @@ class CatastroWidget(QtWidgets.QDockWidget, FORM_CLASS):
         row = self.tableWidget.currentRow() 
         try: 
             codigo = self.tableWidget.item(row,0).text()
+            print(codigo)
             sql_terreno = f''' select * from catastro.terrenosvista19  where codigo = '{codigo}' '''
 
             sql_construcciones = f''' select * from catastro.construccionesvista19  where codigo = '{codigo}' '''
 
-            sql_vecinos = f''' select n.* from catastro.terrenosvista19 n, catastro.terrenosvista19 p
-            where st_touches(n.geom,p.geom) 
+            sql_vecinos = f''' select n.id, n.codigo, n.direccion ,round(n.superficie) superficie, n.titular, n.nombre, n.apellidos, n.direccion, st_makeValid(n.geom) geom from catastro.terrenosvista19 n, catastro.terrenosvista19 p
+            where st_touches(st_makeValid(n.geom),st_makeValid(p.geom))  
             and p.codigo = '{codigo}'
             and n.codigo != '{codigo}' '''
 
@@ -303,7 +304,7 @@ class EjesVialesWidget(QtWidgets.QDialog,FORM_EJESVIALES) :
 
     def createFeature(self): 
         lyr = QgsProject.instance().mapLayersByName('nuevo_eje_via')[0]
-        manzana = int(self.lineEdit.text())
+        manzana = self.lineEdit.text()
         nombre = self.comboBox.currentText()
         print(nombre,manzana)
         
@@ -361,7 +362,7 @@ class ManzanasDialog(QtWidgets.QDialog):
         layout = QGridLayout()
 
         self.numManzano = QLineEdit()
-        self.numManzano.setValidator(QIntValidator())
+        # self.numManzano.setValidator(QIntValidator())
         layout.addWidget(labelManzano,0,0)
         layout.addWidget(self.numManzano,0,1)
 
@@ -379,7 +380,7 @@ class ManzanasDialog(QtWidgets.QDialog):
 
     def createFeature(self): 
         if self.statusCombo.currentIndex() != 0 and self.numManzano.text() != '' :
-            numManzano = int(self.numManzano.text())
+            numManzano = self.numManzano.text()
             status = str(self.statusCombo.currentText())
 
             try:
@@ -400,7 +401,7 @@ class ManzanasDialog(QtWidgets.QDialog):
 
                     sql = f''' INSERT INTO catastro.manzanos
                     (manzana, status, geom)
-                    VALUES({numManzano}, '{status}', st_transform(st_geomfromtext('{geom}',{srid}),32719));
+                    VALUES('{numManzano}', '{status}', st_transform(st_geomfromtext('{geom}',{srid}),32719));
                     '''
                     self.driver.create(sql)
 
@@ -558,4 +559,96 @@ class ZonasWidget(QtWidgets.QDialog,FORM_ZONAS) :
         #     pass
         # except Exception as ex: 
         #     print('error createFeature',ex)
+
+FORM_OT, _ = uic.loadUiType(os.path.join(
+    os.path.dirname(__file__), 'UI\ot_dialog_base.ui'))
+class OrdenesTrabajo(QtWidgets.QDockWidget,FORM_OT):
+    closingPlugin = pyqtSignal()
+    def __init__(self, parent=None):
+        """Constructor."""
+        super(OrdenesTrabajo, self).__init__(parent)
+        self.driver = DataBaseDriver()
+        self.icons = {
+            'search' : os.path.join(os.path.dirname(__file__), r'icon\search.svg'),
+            'trash' : os.path.join(os.path.dirname(__file__), r'icon\trash-solid.svg')
+        }
+        self.plugin_dir = os.path.dirname(__file__)
+
+
+       
+        # Set up the user interface from Designer.
+        # After setupUI you can access any designer object by doing
+        # self.<objectname>, and you can use autoconnect slots - see
+        # http://doc.qt.io/qt-5/designer-using-a-ui-file.html
+        # #widgets-and-dialogs-with-auto-connect
+        self.setupUi(self)
+        self.UIComponents()
+        self.search()
+
+
+    def closeEvent(self, event):
+        self.closingPlugin.emit()
+        event.accept()
+
+    def UIComponents(self):
+        self.tableWidget.setColumnHidden(0, True);
+        pass
+
+
+
+    def search(self):
+        param = self.lineEdit.text()
+        values = param.split() 
+        q = ''
+        # print(values)
+        if len(values) > 1:
+            for e in values: 
+                q = q + '%' + e + '% '
+        else:
+            try: 
+                q = '%' + values[0]  + '%'
+            except IndexError:
+                q = ''
+                pass
+        
+        param  = q
+        # print(param)
+        if param == '':
+            sql = '''select au.id, au.first_name || ' ' || au.last_name nombre, count(ot.id)  from catastro.auth_user au
+            left join catastro.otcatastro ot on ot.idusuario = au.id 
+            group by au.id, au.first_name , au.last_name'''
+        else:
+            sql = f'''select au.id, au.last_name || ' ' || au.first_name nombre, count(ot.id)  from catastro.auth_user au
+            left join catastro.otcatastro ot on ot.idusuario = au.id 
+            where au.first_name || ' ' || au.last_name ilike '%{param}%'
+            group by au.id, au.first_name , au.last_name
+            order by au.last_name || ' ' || au.first_name '''
+        
+        try:
+            r = self.driver.read(sql,as_dict=False )
+            # print('resultado search',r)
+            if len(r) > 0:
+                self.populate(r)
+        except Exception as ex: 
+            print('error search',ex)
+        
+    def populate(self,data):
+        try:
+            # print(data)
+            a = len(data)
+            b = len(data[0])
+            i = 1
+            j = 1
+            self.tableWidget.setRowCount(a)
+            self.tableWidget.setColumnCount(b)
+            for j in range(a):
+                for i in range(b):
+                    # print(str(data[j][i]))
+                    item = QTableWidgetItem(str(data[j][i]))
+                    self.tableWidget.setItem(j, i, item)
+        except Exception as ex:
+            # QMessageBox.about(self, "Error:", "No Existen Registros")
+            # QgsMessageLog.logMessage(f'{ex}', 'aGrae GIS', level=1)
+            print('error populate',ex)
+
 
