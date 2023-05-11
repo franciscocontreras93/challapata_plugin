@@ -3966,7 +3966,7 @@ class ColegioRiberalta:
         layout.itemById('id_serv_alcant').setText('{}'.format(str(terreno['alcantarillado'])))
         layout.itemById('id_serv_alcant').setText('{}'.format(str(terreno['alcantarillado'])))
         layout.itemById('id_tipo_inmb').setText('{}'.format(str(terreno['tipo_inmueble'])))
-        layout.itemById('id_fecha').setText('{} / {} / {} '.format(now.day,now.month,now.year))
+        layout.itemById('id_fecha').setText('{}/{}/{} '.format(now.day,now.month,now.year))
        
 
         croquis = layout.itemById('id_croquis')
